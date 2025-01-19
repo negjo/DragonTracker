@@ -313,6 +313,14 @@ class Settings {
     })
     endermiteWarning = false;
 
+    @TextProperty({
+        name: "Message after loot",
+        description: "Message to send after dragon loot is detected. Can be used for teleporting out of end.",
+        category: "Misc",
+        placeholder: ""
+    })
+    afterLootMsg = "";
+
     //Profit
     @SwitchProperty({
         name: "Show profit",

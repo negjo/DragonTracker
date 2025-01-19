@@ -576,7 +576,7 @@ function scanForLoot(){
         pogObject.save()
         placed = 0;
         dragonDied = false
-        ChatLib.command("warp top")
+        ChatLib.say(Settings.afterLootMsg)
     }
 }
 
@@ -734,25 +734,7 @@ function updateLootTracker(){
     lootTrackerObject.setString(lootTrackerArray.join("\n"));
 }
 
-register("step", () => {
-	scanForLoot()
-    updateLootTracker()
-}).setFps(20)
-
-register("renderOverlay", () => {
-	trackerDrawFunction()
-})
-
-register("command", (...args) => {
-	Settings.openGUI()
-}).setName("dragontracker", true)
-
-register("command", (...args) => {
-	Settings.openGUI()
-}).setName("dt", false)
-
 function updatePrices(){
-    print("Updating")    
     for(item in ahPrices){
         updateAhAvgPrice(item, 0)
         updateAhLbinPrice(item, 0)
@@ -781,11 +763,9 @@ function updateAhAvgPrice(item, retryCnt){
         json: true,
     })
         .then(function(response) {
-            print("Success " + item)
             ahPrices[item].avg = response.mean;
         })
         .catch(function(err) {
-            print("retrying " + item)
             if(retryCnt < 5){
                 setTimeout(() => {
                     updateAhAvgPrice(item, retryCnt + 1)
@@ -814,11 +794,9 @@ function updateAhLbinPrice(item, retryCnt){
         json: true,
     })
         .then(function(response) {
-            print("Success " + item)
             ahPrices[item].lbin = response.lowest
         })
         .catch(function(err) {
-            print("retrying " + item)
             if(retryCnt < 5){
                 setTimeout(() => {
                     updateAhLbinPrice(item, retryCnt + 1)
@@ -860,7 +838,6 @@ function updateBzPrice(item, retryCnt){
         }
     );
 }
-
 
 function calculateProfit(){
     profit = 0;
@@ -909,10 +886,8 @@ function calculateProfit(){
 
 function calculateAhItemProfit(item, priceSetting, sacSetting){
     if(sacSetting == true){
-        let a = sacrificeCalc(item)
-
-        //print(item + ": " + a)
-        profit += pogObject[item] * a
+        let sacProfit = sacrificeCalc(item)
+        profit += pogObject[item] * sacProfit
     }
     else if(priceSetting == LBIN){
         profit += pogObject[item] * ahPrices[item].lbin
@@ -933,19 +908,6 @@ function calculateBzItemProfit(item, setting){
         profit += pogObject[item] * bzPrices[item].instaBuy;
     }
 }
-
-register("gameLoad", () => {
-    updatePrices()
-})
-
-register("step", () => {
-    updatePrices()
-}).setDelay(900)
-
-register("command", (...args) => {
-	updatePrices()
-}).setName("dtupdate", false)
-
 
 function sacrificeCalc(item){
     let eyePrice = 0;
@@ -1008,10 +970,7 @@ function sacrificeCalc(item){
     else if(item.includes("Young")){
         return essenceProfit*1.2 + 0.55*(youngFragsPrice*17.5*0.8193 + residuePrice*0.1084 + hornPrice*0.0241 + eyePrice*0.0482)
     }
-
-
 }    
-
 
 function getBzItemPrice(itemObject, setting){
     if(setting == INSTASELL){
@@ -1024,3 +983,32 @@ function getBzItemPrice(itemObject, setting){
         return itemObject.midPrice
     }
 }
+
+register("step", () => {
+	scanForLoot()
+    updateLootTracker()
+}).setFps(20)
+
+register("renderOverlay", () => {
+	trackerDrawFunction()
+})
+
+register("command", (...args) => {
+	Settings.openGUI()
+}).setName("dragontracker", true)
+
+register("command", (...args) => {
+	Settings.openGUI()
+}).setName("dt", false)
+
+register("gameLoad", () => {
+    updatePrices()
+})
+
+register("step", () => {
+    updatePrices()
+}).setDelay(900)
+
+register("command", (...args) => {
+	updatePrices()
+}).setName("dtupdate", false)
