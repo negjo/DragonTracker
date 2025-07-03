@@ -143,6 +143,10 @@ function removeCommas(value){
     return value.replace(/,/g, '');
 }
 
+function cleanDamageString(damageString){
+    return damageString.replace(/,/g, '').replace(/\(NEW RECORD!\)/g, '');
+}
+
 function addCommas(nStr)
 {
     nStr += '';
@@ -243,13 +247,14 @@ register("chat", (name, damage) =>  {
 }).setCriteria("1st Damager - ${name} - ${damage}").setContains()
 
 register("chat", (damage, position) =>  {
+    ChatLib.chat("test " + cleanDamageString(damage))
     if(!Settings.trackerEnabled){
         return
     }
     if(!dragonDied){
         return
     }
-    let myDamage = removeCommas(damage)
+    let myDamage = cleanDamageString(damage)
 
     let damageWeight = parseInt(myDamage/topDamage*100)
     let positionWeight = 10;
