@@ -54,6 +54,7 @@ const pogObject = new PogObject("DragonTracker", {
     Young_Dragon_Fragment: 0,
     Dragon_Essence: 0,
     Runecrafting_exp: 0,
+    Draconic_Shard: 0,
 
     Dragons_Summoned: 0,
     Eyes_Placed: 0,
@@ -133,6 +134,7 @@ bzPrices = {
 placed = 0;
 dragonDied = false;
 topDamage = 0;
+lastDamage = 0;
 lastDragon = "none"
 totalWeight = 0;
 runecraftingExp = 0;
@@ -247,7 +249,6 @@ register("chat", (name, damage) =>  {
 }).setCriteria("1st Damager - ${name} - ${damage}").setContains()
 
 register("chat", (damage, position) =>  {
-    ChatLib.chat("test " + cleanDamageString(damage))
     if(!Settings.trackerEnabled){
         return
     }
@@ -255,6 +256,7 @@ register("chat", (damage, position) =>  {
         return
     }
     let myDamage = cleanDamageString(damage)
+    lastDamage = myDamage
 
     let damageWeight = parseInt(myDamage/topDamage*100)
     let positionWeight = 10;
@@ -571,6 +573,9 @@ function scanForLoot(){
             }
         }
 
+        if(placed > 0 && lastDamage > 0){
+            pogObject.Draconic_Shard = pogObject.Draconic_Shard + 1;
+        }
         pogObject.Runecrafting_exp = pogObject.Runecrafting_exp + runecraftingExp
         pogObject.Dragons_Summoned = pogObject.Dragons_Summoned + 1;
         pogObject.Eyes_Placed = pogObject.Eyes_Placed + placed;
@@ -718,6 +723,9 @@ function updateLootTracker(){
     }
     if(Settings.showRunecrafting){
         lootTrackerArray.push("&5Runecrafting exp: &e" + pogObject.Runecrafting_exp)
+    }
+    if(Settings.showDraconics){
+        lootTrackerArray.push("&6Draconic Shard: &e" + pogObject.Draconic_Shard)
     }
     if(Settings.showHistory && pogObject.Dragons_Summoned >= 3){
         lootTrackerArray.push("")

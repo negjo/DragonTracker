@@ -212,6 +212,15 @@ class Settings {
     showScales = true;
 
     @SwitchProperty({
+        name: "Show Draconics",
+        description: "Show draconic attribute shards in the tracker.",
+        category: "Tracker",
+        subcategory: "Loot",
+        placeholder: "Enable"
+    })
+    showDraconics = true;
+
+    @SwitchProperty({
         name: "Show runecrafting xp",
         description: "Show runecrafting xp in the tracker.",
         category: "Tracker",
