@@ -248,11 +248,15 @@ register("chat", (name, damage) =>  {
     topDamage = removeCommas(damage);
 }).setCriteria("1st Damager - ${name} - ${damage}").setContains()
 
-register("chat", (damage, position) =>  {
+register("chat", (prefix, damage, position) =>  {
+    //ChatLib.chat("&cprefix: " + prefix.trim().length + " &ddamage: " + damage + " &eposition: " + position);
     if(!Settings.trackerEnabled){
         return
     }
     if(!dragonDied){
+        return
+    }
+    if(prefix.trim().length > 0){
         return
     }
     let myDamage = cleanDamageString(damage)
@@ -299,7 +303,7 @@ register("chat", (damage, position) =>  {
 
     let eyesWeight = placed*100
     totalWeight = damageWeight + positionWeight + eyesWeight
-}).setCriteria("Your Damage: ${damage} (Position #${position})")
+}).setCriteria("${prefix} Your Damage: ${damage} (Position #${position})")
 
 EntityArmorStand = Java.type('net.minecraft.entity.item.EntityArmorStand');
 
@@ -516,7 +520,7 @@ function scanForLoot(){
             ChatLib.chat("&eTracked &c" + lastDragon.toLowerCase() + " &edragon")
             ChatLib.chat("&eEyes placed: &d" + placed)
             ChatLib.chat("&eWeight: &d" + totalWeight)
-            ChatLib.chat("&eLoot: &d" + itemFound + " &e+ &d" + frags + " " + lastDragon.toLowerCase() + " &efragments")
+            ChatLib.chat("&eLoot: &d" + itemFound + " &e+ &d" + frags + " " + lastDragon.toLowerCase() + " &efragments" + ((placed > 0 && lastDamage > 0) ? " &e+ &d1 Draconic Shard" : ""))
             if(itemFound == "§7[Lvl 1] §5Ender Dragon" || itemFound == "§7[Lvl 1] §6Ender Dragon"){
                 ChatLib.chat("&eSince last pet: &d" + pogObject.Since_Last_Pet);
                 pogObject.Since_Last_Pet = 0;
