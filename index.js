@@ -195,21 +195,21 @@ register("chat", (item, essence, event) => {
             ChatLib.chat("&4&lNo Endermite pet detected!")
         }
     }
-}).setCriteria("SACRIFICE! You turned ${item} into ${essence} Dragon Essence!").setContains();
+}).setCriteria("SACRIFICE! You turned ${item} into ${essence} Dragon Essence!");
 
 register("chat", (count, event) => {
     if(!Settings.trackerEnabled){
         return
     }
     placed += 1
-}).setCriteria("☬ You placed a Summoning Eye!").setContains();
+}).setCriteria("☬ You placed a Summoning Eye! (${count}/8)");
 
 register("chat", (message, event) => {
     if(!Settings.trackerEnabled){
         return
     }
     placed -= 1
-}).setCriteria("You recovered a Summoning Eye!").setContains();
+}).setCriteria("You recovered a Summoning Eye!");
 
 register("chat", (dragon) => {
     if(!Settings.trackerEnabled){
@@ -222,7 +222,7 @@ register("chat", (dragon) => {
             ChatLib.chat("&4&lNo Black Cat detected!")
         }
     }
-}).setCriteria("The ${dragon} Dragon has spawned!").setContains();
+}).setCriteria("The ${dragon} Dragon has spawned!");
 
 register("chat", (xp) => {
     if(!Settings.trackerEnabled){
@@ -297,7 +297,7 @@ register("chat", (damage, position) =>  {
 
     let eyesWeight = placed*100
     totalWeight = damageWeight + positionWeight + eyesWeight
-}).setCriteria("Your Damage: ${damage} (Position #${position})").setContains()
+}).setCriteria("Your Damage: ${damage} (Position #${position})")
 
 EntityArmorStand = Java.type('net.minecraft.entity.item.EntityArmorStand');
 
@@ -322,8 +322,6 @@ function scanForLoot(){
             case "§7[Lvl 1] §5Ender Dragon":
                 weightLeft = totalWeight - 450
                 pogObject.Epic_Ender_Dragon = pogObject.Epic_Ender_Dragon + 1;
-                ChatLib.chat("&eSince last pet: &d" + pogObject.Since_Last_Pet);
-                pogObject.Since_Last_Pet = 0;
                 if(Settings.announcePet){
                     ChatLib.command("pc " + Settings.epicPetMsg)
                 }
@@ -332,8 +330,6 @@ function scanForLoot(){
             case "§7[Lvl 1] §6Ender Dragon":
                 weightLeft = totalWeight - 450
                 pogObject.Legendary_Ender_Dragon = pogObject.Legendary_Ender_Dragon + 1;
-                ChatLib.chat("&eSince last pet: &d" + pogObject.Since_Last_Pet);
-                pogObject.Since_Last_Pet = 0;
                 if(Settings.announcePet){
                     ChatLib.command("pc " + Settings.legPetMsg)
                 }
@@ -519,6 +515,10 @@ function scanForLoot(){
             ChatLib.chat("&eEyes placed: &d" + placed)
             ChatLib.chat("&eWeight: &d" + totalWeight)
             ChatLib.chat("&eLoot: &d" + itemFound + " &e+ &d" + frags + " " + lastDragon.toLowerCase() + " &efragments")
+            if(itemFound == "§7[Lvl 1] §5Ender Dragon" || itemFound == "§7[Lvl 1] §6Ender Dragon"){
+                ChatLib.chat("&eSince last pet: &d" + pogObject.Since_Last_Pet);
+                pogObject.Since_Last_Pet = 0;
+            }
             ChatLib.chat("&e---------------------------------")
         }
         if(Settings.announceAllDrops){
