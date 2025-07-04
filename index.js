@@ -765,12 +765,6 @@ register("step", () => {
     updateLootTracker()
 }).setFps(20)
 
-register("command", (...args) => {
-    updateLootTracker()
-    print(JSON.stringify(bzPrices))
-    print(JSON.stringify(ahPrices))
-}).setName("dttest", true)
-
 register("renderOverlay", () => {
 	trackerDrawFunction()
 })

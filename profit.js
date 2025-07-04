@@ -71,7 +71,6 @@ function updatePrices(){
     }
     for(item in bzPrices){
         updateBzPrice(item, 0)
-        print("Updating Bazaar price for " + item)
     }
 }
 
@@ -92,17 +91,18 @@ function updateBzPrice(item, retryCnt){
         json: true,
     })
         .then(function(response) {
-            print("Success " + item)
             bzPrices[item].instaBuy = response.buy;
             bzPrices[item].instaSell = response.sell;
             bzPrices[item].midPrice = (response.buy + response.sell)/2
         })
         .catch(function(err) {
-            print("retrying " + item)
             if(retryCnt < 5){
                 setTimeout(() => {
                     updateBzPrice(item, retryCnt + 1)
                 }, 10000);
+            }
+            else{
+                ChatLib.chat("&e[DT] &cFailed to update Bazaar price for " + item + ". If this keeps happening repeatedly, please report it.")
             }
         }
     );
@@ -135,6 +135,9 @@ function updateAhAvgPrice(item, retryCnt){
                     updateAhAvgPrice(item, retryCnt + 1)
                 }, 10000);
             }
+            else{
+                ChatLib.chat("&e[DT] &cFailed to update AH average price for " + item + ". If this keeps happening repeatedly, please report it.")
+            }
         }
     );
 }
@@ -165,6 +168,9 @@ function updateAhLbinPrice(item, retryCnt){
                 setTimeout(() => {
                     updateAhLbinPrice(item, retryCnt + 1)
                 }, 10000);
+            }
+            else{
+                ChatLib.chat("&e[DT] &cFailed to update AH lowest BIN price for " + item + ". If this keeps happening repeatedly, please report it.")
             }
         }
     );
