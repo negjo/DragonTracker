@@ -11,14 +11,15 @@ import { @Vigilant, @SwitchProperty, @SliderProperty, @PercentSliderProperty, @B
 
         return categories.indexOf(a.name) - categories.indexOf(b.name);
     },
+    /*
     getSubcategoryComparator: () => (a, b) => {
-        // These function examples will sort the subcategories by the order in the array, so eeeeeee
+        // These function examples will sort the subcategories by the order in the array, so 
         // will be above Category.
         const subcategories = ["General", "Loot", "Extra"];
 
         return subcategories.indexOf(a.getValue()[0].attributesExt.subcategory) -
             subcategories.indexOf(b.getValue()[0].attributesExt.subcategory);
-    },
+    },*/
 })
 class Settings {
     //General
@@ -354,7 +355,7 @@ class Settings {
         subcategory: "Pricing",
         options: ["Buy Order", "Middle", "Insta Buy"]
     })
-    eyePricing = 1;
+    eyePricing = 0;
 
     @SelectorProperty({
         name: "AH prices",
@@ -445,15 +446,6 @@ class Settings {
         placeholder: "Disable"
     })
     sacOthers = false;
-
-    @SwitchProperty({
-        name: "Sacrifice AOTDs",
-        description: "Whether the profit calculator should assume sacrificing AOTDs instead of selling them.",
-        category: "Profit",
-        subcategory: "Sactifice",
-        placeholder: "Enable"
-    })
-    sacAotds = true;
 
     constructor() {
         this.initialize(this);
