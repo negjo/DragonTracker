@@ -339,6 +339,14 @@ class Settings {
     })
     showProfit = true;
 
+    @SwitchProperty({
+        name: "Shorter values",
+        description: "Shorten various values in the profit tracker.",
+        category: "Profit",
+        placeholder: "Enable"
+    })
+    shorterValues = true;
+
     @SelectorProperty({
         name: "Summoning Eye price",
         description: "Choose what kind of price to use for summoning eyes.",
@@ -392,6 +400,15 @@ class Settings {
         options: ["Sell Order", "Middle", "Insta Sell"]
     })
     residuePricing = 1;
+
+    @SelectorProperty({
+        name: "Draconic Shard pricing",
+        description: "Choose what kind of price to use for draconic shards.",
+        category: "Profit",
+        subcategory: "Pricing",
+        options: ["Sell Order", "Middle", "Insta Sell"]
+    })
+    draconicPricing = 1;
 
     @SelectorProperty({
         name: "Other Items pricing",

@@ -54,7 +54,7 @@ const pogObject = new PogObject("DragonTracker", {
     Young_Dragon_Fragment: 0,
     Dragon_Essence: 0,
     Runecrafting_exp: 0,
-    Draconic_Shard: 0,
+    Shard_Draconic: 0,
 
     Dragons_Summoned: 0,
     Eyes_Placed: 0,
@@ -129,6 +129,7 @@ bzPrices = {
     Young_Dragon_Fragment: {},
     Dragon_Essence: {},
     Ritual_Residue: {},
+    Shard_Draconic: {},
 }
 
 placed = 0;
@@ -160,6 +161,33 @@ function addCommas(nStr)
         x1 = x1.replace(rgx, '$1' + ',' + '$2');
     }
     return x1 + x2;
+}
+
+function formatPrice(price){
+    price = parseInt(price);
+    if(Settings.shorterValues){
+        if(price > 10_000_000_000){
+            return (price/1_000_000_000).toFixed(1) + "b"
+        }
+        if(price > 1_000_000_000){
+            return (price/1_000_000_000).toFixed(2) + "b"
+        }
+        if(price > 100_000_000){
+            return (price/1_000_000).toFixed(0) + "m"
+        }
+        if(price > 1_000_000){
+            return (price/1_000_000).toFixed(1) + "m"
+        }
+        if(price > 100_000){
+            return (price/1_000).toFixed(0) + "k"
+        }
+        if(price > 1_000){
+            return (price/1_000).toFixed(1) + "k"
+        }
+    }
+    price = addCommas(price);
+    return price
+
 }
 
 function checkEnd(){
@@ -520,7 +548,10 @@ function scanForLoot(){
             ChatLib.chat("&eTracked &c" + lastDragon.toLowerCase() + " &edragon")
             ChatLib.chat("&eEyes placed: &d" + placed)
             ChatLib.chat("&eWeight: &d" + totalWeight)
-            ChatLib.chat("&eLoot: &d" + itemFound + " &e+ &d" + frags + " " + lastDragon.toLowerCase() + " &efragments" + ((placed > 0 && lastDamage > 0) ? " &e+ &d1 Draconic Shard" : ""))
+            ChatLib.chat("&eLoot: &d" + itemFound + " &e+ &d" + frags + " " + lastDragon.toLowerCase() + " &efragments" + ((placed > 0 && lastDamage > 0) ? " &e+ &6Draconic Shard" : ""))
+            let profit = 0;
+            profit -= placed * getBzItemPrice(bzPrices.Summoning_Eye, Settings.eyePricing)
+            profit += getAhItemPrice(itemFound)
             if(itemFound == "§7[Lvl 1] §5Ender Dragon" || itemFound == "§7[Lvl 1] §6Ender Dragon"){
                 ChatLib.chat("&eSince last pet: &d" + pogObject.Since_Last_Pet);
                 pogObject.Since_Last_Pet = 0;
@@ -578,7 +609,7 @@ function scanForLoot(){
         }
 
         if(placed > 0 && lastDamage > 0){
-            pogObject.Draconic_Shard = pogObject.Draconic_Shard + 1;
+            pogObject.Shard_Draconic = pogObject.Shard_Draconic + 1;
         }
         pogObject.Runecrafting_exp = pogObject.Runecrafting_exp + runecraftingExp
         pogObject.Dragons_Summoned = pogObject.Dragons_Summoned + 1;
@@ -665,71 +696,72 @@ function updateLootTracker(){
     }
     if(Settings.showPets){
         lootTrackerArray.push("")
-        lootTrackerArray.push("&5Epic Ender Dragon: &e" + pogObject.Epic_Ender_Dragon + " &d- &e" + ((pogObject.Epic_Ender_Dragon/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Legendary Ender Dragon: &e" + pogObject.Legendary_Ender_Dragon + " &d- &e" + ((pogObject.Legendary_Ender_Dragon/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
+        lootTrackerArray.push("&5Epic Ender Dragon: &e" + pogObject.Epic_Ender_Dragon + " &d- &e" + ((pogObject.Epic_Ender_Dragon/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d - &e" + formatPrice(getAhItemPrice("Epic_Ender_Dragon", Settings.ahPricing, false)))
+        lootTrackerArray.push("&6Legendary Ender Dragon: &e" + pogObject.Legendary_Ender_Dragon + " &d- &e" + ((pogObject.Legendary_Ender_Dragon/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d - &e" + formatPrice(getAhItemPrice("Legendary_Ender_Dragon", Settings.ahPricing, false)))
     }
     lootTrackerArray.push("")
     if(Settings.showAotds){
-        lootTrackerArray.push("&6Aspect of the Dragons: &e" + pogObject.Aspect_of_the_Dragon + " &d- &e" + ((pogObject.Aspect_of_the_Dragon/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
+        lootTrackerArray.push("&6Aspect of the Dragons: &e" + pogObject.Aspect_of_the_Dragon + " &d- &e" + ((pogObject.Aspect_of_the_Dragon/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Aspect_of_the_Dragon", Settings.ahPricing, Settings.sacAotds)))
     }
     if(Settings.showHorns){
-        lootTrackerArray.push("&5Dragon Horn: &e" + pogObject.Dragon_Horn + " &d- &e" + ((pogObject.Dragon_Horn/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
+        lootTrackerArray.push("&5Dragon Horn: &e" + pogObject.Dragon_Horn + " &d- &e" + ((pogObject.Dragon_Horn/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getBzItemPrice(bzPrices.Dragon_Horn, Settings.hornPricing)))
     }
     if(Settings.showClaws){
-        lootTrackerArray.push("&9Dragon Claw: &e" + pogObject.Dragon_Claw + " &d- &e" + ((pogObject.Dragon_Claw/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
+        lootTrackerArray.push("&9Dragon Claw: &e" + pogObject.Dragon_Claw + " &d- &e" + ((pogObject.Dragon_Claw/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getBzItemPrice(bzPrices.Dragon_Claw, Settings.otherPricing)))
     }
     if(Settings.showScales){
-        lootTrackerArray.push("&9Dragon Scale: &e" + pogObject.Dragon_Scale + " &d- &e" + ((pogObject.Dragon_Scale/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
+        lootTrackerArray.push("&9Dragon Scale: &e" + pogObject.Dragon_Scale + " &d- &e" + ((pogObject.Dragon_Scale/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getBzItemPrice(bzPrices.Dragon_Scale, Settings.otherPricing)))
     }
     if(Settings.showSuperior){
-        lootTrackerArray.push("&6Superior Dragon Helmet: &e" + pogObject.Superior_Dragon_Helmet + " &d- &e" + ((pogObject.Superior_Dragon_Helmet/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Superior Dragon Chestplate: &e" + pogObject.Superior_Dragon_Chestplate + " &d- &e" + ((pogObject.Superior_Dragon_Chestplate/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Superior Dragon Leggings: &e" + pogObject.Superior_Dragon_Leggings + " &d- &e" + ((pogObject.Superior_Dragon_Leggings/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Superior Dragon Boots: &e" + pogObject.Superior_Dragon_Boots + " &d- &e" + ((pogObject.Superior_Dragon_Boots/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
+        
+        lootTrackerArray.push("&6Superior Dragon Helmet: &e" + pogObject.Superior_Dragon_Helmet + " &d- &e" + ((pogObject.Superior_Dragon_Helmet/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Superior_Dragon_Helmet", Settings.ahPricing, Settings.sacSups)))
+        lootTrackerArray.push("&6Superior Dragon Chestplate: &e" + pogObject.Superior_Dragon_Chestplate + " &d- &e" + ((pogObject.Superior_Dragon_Chestplate/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Superior_Dragon_Chestplate", Settings.ahPricing, Settings.sacSups)))
+        lootTrackerArray.push("&6Superior Dragon Leggings: &e" + pogObject.Superior_Dragon_Leggings + " &d- &e" + ((pogObject.Superior_Dragon_Leggings/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Superior_Dragon_Leggings", Settings.ahPricing, Settings.sacSups)))
+        lootTrackerArray.push("&6Superior Dragon Boots: &e" + pogObject.Superior_Dragon_Boots + " &d- &e" + ((pogObject.Superior_Dragon_Boots/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Superior_Dragon_Boots", Settings.ahPricing, Settings.sacSups)))
     }
     if(Settings.showOthers){
-        lootTrackerArray.push("&6Strong Dragon Helmet: &e" + pogObject.Strong_Dragon_Helmet + " &d- &e" + ((pogObject.Strong_Dragon_Helmet/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Strong Dragon Chestplate: &e" + pogObject.Strong_Dragon_Chestplate + " &d- &e" + ((pogObject.Strong_Dragon_Chestplate/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Strong Dragon Leggings: &e" + pogObject.Strong_Dragon_Leggings + " &d- &e" + ((pogObject.Strong_Dragon_Leggings/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Strong Dragon Boots: &e" + pogObject.Strong_Dragon_Boots + " &d- &e" + ((pogObject.Strong_Dragon_Boots/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Wise Dragon Helmet: &e" + pogObject.Wise_Dragon_Helmet + " &d- &e" + ((pogObject.Wise_Dragon_Helmet/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Wise Dragon Chestplate: &e" + pogObject.Wise_Dragon_Chestplate + " &d- &e" + ((pogObject.Wise_Dragon_Chestplate/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Wise Dragon Leggings: &e" + pogObject.Wise_Dragon_Leggings + " &d- &e" + ((pogObject.Wise_Dragon_Leggings/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Wise Dragon Boots: &e" + pogObject.Wise_Dragon_Boots + " &d- &e" + ((pogObject.Wise_Dragon_Boots/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Unstable Dragon Helmet: &e" + pogObject.Unstable_Dragon_Helmet + " &d- &e" + ((pogObject.Unstable_Dragon_Helmet/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Unstable Dragon Chestplate: &e" + pogObject.Unstable_Dragon_Chestplate + " &d- &e" + ((pogObject.Unstable_Dragon_Chestplate/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Unstable Dragon Leggings: &e" + pogObject.Unstable_Dragon_Leggings + " &d- &e" + ((pogObject.Unstable_Dragon_Leggings/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Unstable Dragon Boots: &e" + pogObject.Unstable_Dragon_Boots + " &d- &e" + ((pogObject.Unstable_Dragon_Boots/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Old Dragon Helmet: &e" + pogObject.Old_Dragon_Helmet + " &d- &e" + ((pogObject.Old_Dragon_Helmet/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Old Dragon Chestplate: &e" + pogObject.Old_Dragon_Chestplate + " &d- &e" + ((pogObject.Old_Dragon_Chestplate/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Old Dragon Leggings: &e" + pogObject.Old_Dragon_Leggings + " &d- &e" + ((pogObject.Old_Dragon_Leggings/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Old Dragon Boots: &e" + pogObject.Old_Dragon_Boots + " &d- &e" + ((pogObject.Old_Dragon_Boots/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Protector Dragon Helmet: &e" + pogObject.Protector_Dragon_Helmet + " &d- &e" + ((pogObject.Protector_Dragon_Helmet/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Protector Dragon Chestplate: &e" + pogObject.Protector_Dragon_Chestplate + " &d- &e" + ((pogObject.Protector_Dragon_Chestplate/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Protector Dragon Leggings: &e" + pogObject.Protector_Dragon_Leggings + " &d- &e" + ((pogObject.Protector_Dragon_Leggings/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Protector Dragon Boots: &e" + pogObject.Protector_Dragon_Boots + " &d- &e" + ((pogObject.Protector_Dragon_Boots/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Young Dragon Helmet: &e" + pogObject.Young_Dragon_Helmet + " &d- &e" + ((pogObject.Young_Dragon_Helmet/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Young Dragon Chestplate: &e" + pogObject.Young_Dragon_Chestplate + " &d- &e" + ((pogObject.Young_Dragon_Chestplate/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Young Dragon Leggings: &e" + pogObject.Young_Dragon_Leggings + " &d- &e" + ((pogObject.Young_Dragon_Leggings/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
-        lootTrackerArray.push("&6Young Dragon Boots: &e" + pogObject.Young_Dragon_Boots + " &d- &e" + ((pogObject.Young_Dragon_Boots/pogObject.Dragons_Summoned)*100).toFixed(2) + "%")
+        lootTrackerArray.push("&6Strong Dragon Helmet: &e" + pogObject.Strong_Dragon_Helmet + " &d- &e" + ((pogObject.Strong_Dragon_Helmet/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Strong_Dragon_Helmet", Settings.ahPricing, Settings.sacOthers)))
+        lootTrackerArray.push("&6Strong Dragon Chestplate: &e" + pogObject.Strong_Dragon_Chestplate + " &d- &e" + ((pogObject.Strong_Dragon_Chestplate/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Strong_Dragon_Chestplate", Settings.ahPricing, Settings.sacOthers)))
+        lootTrackerArray.push("&6Strong Dragon Leggings: &e" + pogObject.Strong_Dragon_Leggings + " &d- &e" + ((pogObject.Strong_Dragon_Leggings/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Strong_Dragon_Leggings", Settings.ahPricing, Settings.sacOthers)))
+        lootTrackerArray.push("&6Strong Dragon Boots: &e" + pogObject.Strong_Dragon_Boots + " &d- &e" + ((pogObject.Strong_Dragon_Boots/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Strong_Dragon_Boots", Settings.ahPricing, Settings.sacOthers)))
+        lootTrackerArray.push("&6Wise Dragon Helmet: &e" + pogObject.Wise_Dragon_Helmet + " &d- &e" + ((pogObject.Wise_Dragon_Helmet/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Wise_Dragon_Helmet", Settings.ahPricing, Settings.sacOthers)))
+        lootTrackerArray.push("&6Wise Dragon Chestplate: &e" + pogObject.Wise_Dragon_Chestplate + " &d- &e" + ((pogObject.Wise_Dragon_Chestplate/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Wise_Dragon_Chestplate", Settings.ahPricing, Settings.sacOthers)))
+        lootTrackerArray.push("&6Wise Dragon Leggings: &e" + pogObject.Wise_Dragon_Leggings + " &d- &e" + ((pogObject.Wise_Dragon_Leggings/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Wise_Dragon_Leggings", Settings.ahPricing, Settings.sacOthers)))
+        lootTrackerArray.push("&6Wise Dragon Boots: &e" + pogObject.Wise_Dragon_Boots + " &d- &e" + ((pogObject.Wise_Dragon_Boots/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Wise_Dragon_Boots", Settings.ahPricing, Settings.sacOthers)))
+        lootTrackerArray.push("&6Unstable Dragon Helmet: &e" + pogObject.Unstable_Dragon_Helmet + " &d- &e" + ((pogObject.Unstable_Dragon_Helmet/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Unstable_Dragon_Helmet", Settings.ahPricing, Settings.sacOthers)))
+        lootTrackerArray.push("&6Unstable Dragon Chestplate: &e" + pogObject.Unstable_Dragon_Chestplate + " &d- &e" + ((pogObject.Unstable_Dragon_Chestplate/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Unstable_Dragon_Chestplate", Settings.ahPricing, Settings.sacOthers)))
+        lootTrackerArray.push("&6Unstable Dragon Leggings: &e" + pogObject.Unstable_Dragon_Leggings + " &d- &e" + ((pogObject.Unstable_Dragon_Leggings/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Unstable_Dragon_Leggings", Settings.ahPricing, Settings.sacOthers)))
+        lootTrackerArray.push("&6Unstable Dragon Boots: &e" + pogObject.Unstable_Dragon_Boots + " &d- &e" + ((pogObject.Unstable_Dragon_Boots/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Unstable_Dragon_Boots", Settings.ahPricing, Settings.sacOthers)))
+        lootTrackerArray.push("&6Old Dragon Helmet: &e" + pogObject.Old_Dragon_Helmet + " &d- &e" + ((pogObject.Old_Dragon_Helmet/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Old_Dragon_Helmet", Settings.ahPricing, Settings.sacOthers)))
+        lootTrackerArray.push("&6Old Dragon Chestplate: &e" + pogObject.Old_Dragon_Chestplate + " &d- &e" + ((pogObject.Old_Dragon_Chestplate/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Old_Dragon_Chestplate", Settings.ahPricing, Settings.sacOthers)))
+        lootTrackerArray.push("&6Old Dragon Leggings: &e" + pogObject.Old_Dragon_Leggings + " &d- &e" + ((pogObject.Old_Dragon_Leggings/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Old_Dragon_Leggings", Settings.ahPricing, Settings.sacOthers)))
+        lootTrackerArray.push("&6Old Dragon Boots: &e" + pogObject.Old_Dragon_Boots + " &d- &e" + ((pogObject.Old_Dragon_Boots/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Old_Dragon_Boots", Settings.ahPricing, Settings.sacOthers)))
+        lootTrackerArray.push("&6Protector Dragon Helmet: &e" + pogObject.Protector_Dragon_Helmet + " &d- &e" + ((pogObject.Protector_Dragon_Helmet/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Protector_Dragon_Helmet", Settings.ahPricing, Settings.sacOthers)))
+        lootTrackerArray.push("&6Protector Dragon Chestplate: &e" + pogObject.Protector_Dragon_Chestplate + " &d- &e" + ((pogObject.Protector_Dragon_Chestplate/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Protector_Dragon_Chestplate", Settings.ahPricing, Settings.sacOthers)))
+        lootTrackerArray.push("&6Protector Dragon Leggings: &e" + pogObject.Protector_Dragon_Leggings + " &d- &e" + ((pogObject.Protector_Dragon_Leggings/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Protector_Dragon_Leggings", Settings.ahPricing, Settings.sacOthers)))
+        lootTrackerArray.push("&6Protector Dragon Boots: &e" + pogObject.Protector_Dragon_Boots + " &d- &e" + ((pogObject.Protector_Dragon_Boots/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Protector_Dragon_Boots", Settings.ahPricing, Settings.sacOthers)))
+        lootTrackerArray.push("&6Young Dragon Helmet: &e" + pogObject.Young_Dragon_Helmet + " &d- &e" + ((pogObject.Young_Dragon_Helmet/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Young_Dragon_Helmet", Settings.ahPricing, Settings.sacOthers)))
+        lootTrackerArray.push("&6Young Dragon Chestplate: &e" + pogObject.Young_Dragon_Chestplate + " &d- &e" + ((pogObject.Young_Dragon_Chestplate/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Young_Dragon_Chestplate", Settings.ahPricing, Settings.sacOthers)))
+        lootTrackerArray.push("&6Young Dragon Leggings: &e" + pogObject.Young_Dragon_Leggings + " &d- &e" + ((pogObject.Young_Dragon_Leggings/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Young_Dragon_Leggings", Settings.ahPricing, Settings.sacOthers)))
+        lootTrackerArray.push("&6Young Dragon Boots: &e" + pogObject.Young_Dragon_Boots + " &d- &e" + ((pogObject.Young_Dragon_Boots/pogObject.Dragons_Summoned)*100).toFixed(2) + "%" + " &d- &e" + formatPrice(getAhItemPrice("Young_Dragon_Boots", Settings.ahPricing, Settings.sacOthers)))
     }
     if(Settings.showFrags){
-        lootTrackerArray.push("&5Superior Dragon Fragments: &e" + pogObject.Superior_Dragon_Fragment)
-        lootTrackerArray.push("&5Strong Dragon Fragments: &e" + pogObject.Strong_Dragon_Fragment)
-        lootTrackerArray.push("&5Wise Dragon Fragments: &e" + pogObject.Wise_Dragon_Fragment)
-        lootTrackerArray.push("&5Unstable Dragon Fragments: &e" + pogObject.Unstable_Dragon_Fragment)
-        lootTrackerArray.push("&5Old Dragon Fragments: &e" + pogObject.Old_Dragon_Fragment)
-        lootTrackerArray.push("&5Protector Dragon Fragments: &e" + pogObject.Protector_Dragon_Fragment)
-        lootTrackerArray.push("&5Young Dragon Fragments: &e" + pogObject.Young_Dragon_Fragment)
+        lootTrackerArray.push("&5Superior Dragon Fragments: &e" + pogObject.Superior_Dragon_Fragment + " &d- &e" + formatPrice(getBzItemPrice(bzPrices.Superior_Dragon_Fragment, Settings.fragPricing)))
+        lootTrackerArray.push("&5Strong Dragon Fragments: &e" + pogObject.Strong_Dragon_Fragment + " &d- &e" + formatPrice(getBzItemPrice(bzPrices.Strong_Dragon_Fragment, Settings.fragPricing)))
+        lootTrackerArray.push("&5Wise Dragon Fragments: &e" + pogObject.Wise_Dragon_Fragment + " &d- &e" + formatPrice(getBzItemPrice(bzPrices.Wise_Dragon_Fragment, Settings.fragPricing)))
+        lootTrackerArray.push("&5Unstable Dragon Fragments: &e" + pogObject.Unstable_Dragon_Fragment + " &d- &e" + formatPrice(getBzItemPrice(bzPrices.Unstable_Dragon_Fragment, Settings.fragPricing)))
+        lootTrackerArray.push("&5Old Dragon Fragments: &e" + pogObject.Old_Dragon_Fragment + " &d- &e" + formatPrice(getBzItemPrice(bzPrices.Old_Dragon_Fragment, Settings.fragPricing)))
+        lootTrackerArray.push("&5Protector Dragon Fragments: &e" + pogObject.Protector_Dragon_Fragment + " &d- &e" + formatPrice(getBzItemPrice(bzPrices.Protector_Dragon_Fragment, Settings.fragPricing)))
+        lootTrackerArray.push("&5Young Dragon Fragments: &e" + pogObject.Young_Dragon_Fragment + " &d- &e" + formatPrice(getBzItemPrice(bzPrices.Young_Dragon_Fragment, Settings.fragPricing)))
+    }
+    if(Settings.showDraconics){
+        lootTrackerArray.push("&6Draconic Shard: &e" + pogObject.Shard_Draconic + " &d- &e" + formatPrice(getBzItemPrice(bzPrices.Shard_Draconic, Settings.draconicPricing)))
     }
     if(Settings.showEssence){
-        lootTrackerArray.push("&dDragon Essence: &e" + pogObject.Dragon_Essence)
+        lootTrackerArray.push("&dDragon Essence: &e" + pogObject.Dragon_Essence + " &d- &e" + formatPrice(getBzItemPrice(bzPrices.Dragon_Essence, Settings.essencePricing)))
     }
     if(Settings.showRunecrafting){
         lootTrackerArray.push("&5Runecrafting exp: &e" + pogObject.Runecrafting_exp)
-    }
-    if(Settings.showDraconics){
-        lootTrackerArray.push("&6Draconic Shard: &e" + pogObject.Draconic_Shard)
     }
     if(Settings.showHistory && pogObject.Dragons_Summoned >= 3){
         lootTrackerArray.push("")
@@ -758,6 +790,7 @@ function updatePrices(){
     }
     for(item in bzPrices){
         updateBzPrice(item, 0)
+        print("Updating Bazaar price for " + item)
     }
 }
 
@@ -878,6 +911,9 @@ function calculateProfit(){
         }
         else if(item == "Ritual_Residue"){
         }
+        else if(item == "Shard_Draconic"){
+            calculateBzItemProfit(item, Settings.draconicPricing)
+        }
         else if(item.includes("Fragment")){
             calculateBzItemProfit(item, Settings.fragPricing)
         }
@@ -925,6 +961,7 @@ function calculateBzItemProfit(item, setting){
         profit += pogObject[item] * bzPrices[item].instaBuy;
     }
 }
+
 
 function sacrificeCalc(item){
     let eyePrice = 0;
@@ -1001,10 +1038,30 @@ function getBzItemPrice(itemObject, setting){
     }
 }
 
+function getAhItemPrice(item, priceSetting, sacSetting){
+    if(sacSetting == true){
+        return sacrificeCalc(item)
+    }
+    else if(priceSetting == LBIN){
+        return ahPrices[item].lbin
+    }
+    else if(priceSetting == AVERAGE){
+        return ahPrices[item].avg
+    }
+}
+
+
 register("step", () => {
 	scanForLoot()
     updateLootTracker()
 }).setFps(20)
+
+/*
+register("command", (...args) => {
+    updateLootTracker()
+    print(JSON.stringify(bzPrices))
+    print(JSON.stringify(ahPrices))
+}).setName("dttest", true)*/
 
 register("renderOverlay", () => {
 	trackerDrawFunction()
