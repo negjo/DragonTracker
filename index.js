@@ -70,6 +70,10 @@ const pogObject = new PogObject("DragonTracker", {
     Weight_history: [],
     Loot_History: [],
     Dragon_History: [],
+
+    Profit: 0,
+    Profit_Drag_Count: 0,
+    Profit_Eyes_Count: 0,
   });
 
 pogObject.save()
@@ -171,12 +175,12 @@ register("chat", (item, essence, event) => {
     }
 }).setCriteria("SACRIFICE! You turned ${item} into ${essence} Dragon Essence!");
 
-register("chat", (count, event) => {
+register("chat", (count, suffix, event) => {
     if(!Settings.trackerEnabled){
         return
     }
     placed += 1
-}).setCriteria("☬ You placed a Summoning Eye! (${count}/8)");
+}).setCriteria("☬ You placed a Summoning Eye! ${suffix}");
 
 register("chat", (message, event) => {
     if(!Settings.trackerEnabled){
@@ -221,7 +225,6 @@ register("chat", (name, damage) =>  {
 }).setCriteria("1st Damager - ${name} - ${damage}").setContains()
 
 register("chat", (prefix, damage, position) =>  {
-    //ChatLib.chat("&cprefix: " + prefix.trim().length + " &ddamage: " + damage + " &eposition: " + position);
     if(!Settings.trackerEnabled){
         return
     }
@@ -487,16 +490,23 @@ function scanForLoot(){
             Client.showTitle(itemFound, " ", 0, 40, 10)
         }
         let frags = parseInt(weightLeft/22)
-        if(Settings.showInChat){
-            let gotDraconic = (placed > 0 && lastDamage > 0);
-            let profit = 0;
-            profit -= placed * getPrice("Summoning_Eye")
+        let gotDraconic = (placed > 0 && lastDamage > 0);
+        let profit = 0;
+        profit -= placed * getPrice("Summoning_Eye")
+        if(itemFound == "§7[Lvl 1] §5Ender Dragon" ){
+            profit += getPrice("Epic_Ender_Dragon")
+        }
+        else if(itemFound == "§7[Lvl 1] §6Ender Dragon"){
+            profit += getPrice("Legendary_Ender_Dragon")
+        }
+        else{
             profit += getPrice(itemFound.slice(2).replace(/ /g, "_"));
-            if(gotDraconic){
-                profit += getPrice("Shard_Draconic")
-            }
-            profit += frags * getPrice(lastDragon.charAt(0).toUpperCase() + lastDragon.slice(1).toLowerCase() + "_Dragon_Fragment")
-
+        }
+        if(gotDraconic){
+            profit += getPrice("Shard_Draconic")
+        }
+        profit += frags * getPrice(lastDragon.charAt(0).toUpperCase() + lastDragon.slice(1).toLowerCase() + "_Dragon_Fragment")
+        if(Settings.showInChat){
             ChatLib.chat("&e---------------------------------")
             ChatLib.chat("&eTracked &c" + lastDragon.toLowerCase() + " &edragon")
             ChatLib.chat("&eEyes placed: &d" + placed)
@@ -569,6 +579,9 @@ function scanForLoot(){
         pogObject.Weight_history.push(totalWeight)
         pogObject.Loot_History.push(itemFound)
         pogObject.Dragon_History.push(lastDragon)
+        pogObject.Profit = pogObject.Profit + profit;
+        pogObject.Profit_Drag_Count = pogObject.Profit_Drag_Count + 1;
+        pogObject.Profit_Eyes_Count = pogObject.Profit_Eyes_Count + placed;
         pogObject.save()
         placed = 0;
         dragonDied = false
@@ -640,10 +653,12 @@ function updateLootTracker(){
         lootTrackerArray.push("&eSince last sup: &d" + pogObject.Since_Last_Sup + " &eLongest: &d" + pogObject.Longest_Sup_Dry_Streak)
     }
     if(Settings.showProfit){
-        let profit = calculateProfit()
+        let profit = Settings.useCurrentPrices ? calculateProfit() : pogObject.Profit;
+        let dragsForProfitCalc = Settings.useCurrentPrices ? pogObject.Dragons_Summoned : pogObject.Profit_Drag_Count;
+        let eyesForProfitCalc = Settings.useCurrentPrices ? pogObject.Eyes_Placed : pogObject.Profit_Eyes_Count;
         lootTrackerArray.push("")
-        lootTrackerArray.push("&eEstimated profit: &d" + formatPrice(Math.floor(profit)))
-        lootTrackerArray.push("&ePer Dragon: &d" + formatPrice(Math.floor(profit/pogObject.Dragons_Summoned)) + " &ePer Eye: &d" + formatPrice(Math.floor(profit/pogObject.Eyes_Placed)))
+        lootTrackerArray.push("&eEstimated profit: &d" + formatPrice(profit))
+        lootTrackerArray.push("&ePer Dragon: &d" + formatPrice(profit/dragsForProfitCalc) + " &ePer Eye: &d" + formatPrice(profit/eyesForProfitCalc))
         lootTrackerArray.push("&eSummoning Eyes: &d" + formatPrice(getPrice("Summoning_Eye")))
     }
     if(Settings.showPets){

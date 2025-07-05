@@ -341,6 +341,14 @@ class Settings {
     showProfit = true;
 
     @SwitchProperty({
+        name: "Use current prices",
+        description: "If this is on, the profit will be calculated from the current prices. This can be useful to see expected value from doing dragons right now. If this is off, the profit will be calculated from the prices at the time of doing the dragons. If this is off, it's recommended to use average prices to avoid saving meaningless data when the market is manipulated or other anomalies happen.",
+        category: "Profit",
+        placeholder: "Disable"
+    })
+    useCurrentPrices = false; 
+
+    @SwitchProperty({
         name: "Shorter values",
         description: "Shorten various values in the profit tracker.",
         category: "Profit",
