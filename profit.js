@@ -117,7 +117,7 @@ function updateAhAvgPrice(item, retryCnt){
         avgUrl = "https://sky.coflnet.com/api/item/price/PET_ENDER_DRAGON?Rarity=LEGENDARY&PetLevel=1&PetItem=NONE"
     }
     else{
-        avgUrl = "https://sky.coflnet.com/api/item/price/" + item.toUpperCase() + "?NoOtherValuableEnchants=true"
+        avgUrl = "https://sky.coflnet.com/api/item/price/" + item.toUpperCase() + "?Clean=true"
     }
     request({
         url: avgUrl,
@@ -151,7 +151,7 @@ function updateAhLbinPrice(item, retryCnt){
         lbinUrl = "https://sky.coflnet.com/api/item/price/PET_ENDER_DRAGON/bin?Rarity=LEGENDARY&PetLevel=1&PetItem=NONE&Bin=true"
     }
     else{
-        lbinUrl = "https://sky.coflnet.com/api/item/price/" + item.toUpperCase() + "/bin?NoOtherValuableEnchants=true&Bin=true"
+        lbinUrl = "https://sky.coflnet.com/api/item/price/" + item.toUpperCase() + "/bin?Clean=true&Bin=true"
     }
     request({
         url: lbinUrl,
