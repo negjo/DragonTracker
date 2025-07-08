@@ -341,8 +341,8 @@ class Settings {
     showProfit = true;
 
     @SwitchProperty({
-        name: "Use current prices",
-        description: "If this is on, the profit will be calculated from the current prices. This can be useful to see expected value from doing dragons right now. If this is off, the profit will be calculated from the prices at the time of doing the dragons. If this is off, it's recommended to use average prices to avoid saving meaningless data when the market is manipulated or other anomalies happen.",
+        name: "Use EV to calculate profit",
+        description: "Use current expected value to calculate profit instead of the prices recorded at the time of the dragon. This works retroactively, but is a lot less accurate.",
         category: "Profit",
         placeholder: "Disable"
     })
@@ -350,7 +350,7 @@ class Settings {
 
     @SwitchProperty({
         name: "Shorter values",
-        description: "Shorten various values in the profit tracker.",
+        description: "Shorten values by using k,m and b instead of writing the whole value.",
         category: "Profit",
         placeholder: "Enable"
     })

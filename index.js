@@ -74,6 +74,8 @@ const pogObject = new PogObject("DragonTracker", {
     Profit: 0,
     Profit_Drag_Count: 0,
     Profit_Eyes_Count: 0,
+
+    Last_Version: "1.0.0",
   });
 
 pogObject.save()
@@ -277,7 +279,7 @@ register("chat", (prefix, damage, position) =>  {
     }
 
     let eyesWeight = placed*100
-    totalWeight = damageWeight + positionWeight + eyesWeight
+    totalWeight = parseInt(damageWeight + positionWeight + eyesWeight)
 }).setCriteria("${prefix} Your Damage: ${damage} (Position #${position})")
 
 EntityArmorStand = Java.type('net.minecraft.entity.item.EntityArmorStand');
@@ -636,10 +638,10 @@ function updateLootTracker(){
     lootTrackerArray = []
     lootTrackerArray.push("&e&lDragon Tracker &cby negjo")
     if(Settings.showSummoned){
-        lootTrackerArray.push("&eDragons Summoned: &d" + pogObject.Dragons_Summoned)
+        lootTrackerArray.push("&eDragons Summoned: &d" + pogObject.Dragons_Summoned + "&e(&d" + pogObject.Profit_Drag_Count + "&e)")
     }
     if(Settings.showEyes){
-        lootTrackerArray.push("&eTotal eyes: &d" + pogObject.Eyes_Placed + " &eAverage: &d" + (pogObject.Eyes_Placed/pogObject.Dragons_Summoned).toFixed(2))
+        lootTrackerArray.push("&eTotal eyes: &d" + pogObject.Eyes_Placed + "&e(&d" + pogObject.Profit_Eyes_Count + "&e)" + " &eAverage: &d" + (pogObject.Eyes_Placed/pogObject.Dragons_Summoned).toFixed(2) + "&e(&d" + (pogObject.Profit_Eyes_Count/pogObject.Profit_Drag_Count).toFixed(2) + "&e)")
     }
     if(Settings.showSincePet){
         if(pogObject.Epic_Ender_Dragon == 0 && pogObject.Legendary_Ender_Dragon == 0){
@@ -654,11 +656,10 @@ function updateLootTracker(){
     }
     if(Settings.showProfit){
         let profit = Settings.useCurrentPrices ? calculateProfit() : pogObject.Profit;
-        let dragsForProfitCalc = Settings.useCurrentPrices ? pogObject.Dragons_Summoned : pogObject.Profit_Drag_Count;
-        let eyesForProfitCalc = Settings.useCurrentPrices ? pogObject.Eyes_Placed : pogObject.Profit_Eyes_Count;
         lootTrackerArray.push("")
         lootTrackerArray.push("&eEstimated profit: &d" + formatPrice(profit))
-        lootTrackerArray.push("&ePer Dragon: &d" + formatPrice(profit/dragsForProfitCalc) + " &ePer Eye: &d" + formatPrice(profit/eyesForProfitCalc))
+        lootTrackerArray.push("&ePer Dragon: &d" + formatPrice(pogObject.Profit/pogObject.Profit_Drag_Count) + " &ePer Eye: &d" + formatPrice(pogObject.Profit/pogObject.Profit_Eyes_Count))
+        lootTrackerArray.push("&eEV Per Dragon: &d" + formatPrice(calculateProfit()/pogObject.Dragons_Summoned) + " &ePer Eye: &d" + formatPrice(calculateProfit()/pogObject.Eyes_Placed))
         lootTrackerArray.push("&eSummoning Eyes: &d" + formatPrice(getPrice("Summoning_Eye")))
     }
     if(Settings.showPets){
@@ -801,5 +802,41 @@ register("step", () => {
 }).setDelay(900)
 
 register("command", (...args) => {
+    ChatLib.chat("&c[Dragon Tracker] &eUpdating prices...")
 	updatePrices()
 }).setName("dtupdate", false)
+
+register("gameLoad", () => {
+    if(pogObject.Last_Version != "1.1.0"){
+        ChatLib.chat("&c[Dragon Tracker] &eThe dragon tracker has been updated to version 1.1.0!")
+        ChatLib.chat("&eChange log:")
+        ChatLib.chat("&e - Added support for Draconic shards")
+        ChatLib.chat("&e - Added profit calculations")
+        ChatLib.chat("&e - Fixed crashes when searching in the config")
+        ChatLib.chat("&e - A bunch of other small fixes")
+        ChatLib.chat("&e Check out github or ct website for complete change log")
+        ChatLib.chat("&e Check out &c/dt &eto set the prices that should be used for profit calculations and some other new settings")
+        ChatLib.chat("&e Check out &c/dthelp &eto see all commands")
+        pogObject.Last_Version = "1.1.0"
+        pogObject.save()
+    }
+})
+
+register("command", (...args) => {
+    print("test")
+    pogObject.Profit = pogObject.Profit + getPrice("Dragon_Horn")
+    pogObject.save()
+}).setName("dttest", false)
+
+backup = pogObject
+
+register("command", (...args) => {
+    print("test")
+    backup = pogObject
+}).setName("dtbackup", false)
+
+register("command", (...args) => {
+    print("test")
+    pogObject = backup
+    pogObject.save()
+}).setName("dtrollback", false)

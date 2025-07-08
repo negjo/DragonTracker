@@ -170,7 +170,7 @@ function updateAhLbinPrice(item, retryCnt){
                 }, 10000);
             }
             else{
-                ChatLib.chat("&e[DT] &cFailed to update AH lowest BIN price for " + item + ". If this keeps happening repeatedly, please report it.")
+                ChatLib.chat("&e[DT] &cFailed to update AH LBIN price for " + item + ". If this keeps happening repeatedly, please report it.")
             }
         }
     );
@@ -235,35 +235,35 @@ function sacrificeCalc(item){
 function getBzItemPrice(item, setting){
     if(item == "Summoning_Eye"){
         if(setting == INSTABUY){
-            return bzPrices[item].instaBuy
+            return parseInt(bzPrices[item].instaBuy)
         }
         else if(setting == BUYORDER){
-            return bzPrices[item].instaSell
+            return parseInt(bzPrices[item].instaSell)
         }
         else if(setting == MIDPRICE){
-            return bzPrices[item].midPrice
+            return parseInt(bzPrices[item].midPrice)
         }
     }
     if(setting == INSTASELL){
-        return bzPrices[item].instaSell
+        return parseInt(bzPrices[item].instaSell)
     }
     else if(setting == SELLORDER){
-        return bzPrices[item].instaBuy
+        return parseInt(bzPrices[item].instaBuy)
     }
     else if(setting == MIDPRICE){
-        return bzPrices[item].midPrice
+        return parseInt(bzPrices[item].midPrice)
     }
 }
 
 function getAhItemPrice(item, priceSetting, sacSetting){
     if(sacSetting == true){
-        return sacrificeCalc(item)
+        return parseInt(sacrificeCalc(item))
     }
     else if(priceSetting == LBIN){
-        return ahPrices[item].lbin
+        return parseInt(ahPrices[item].lbin)
     }
     else if(priceSetting == AVERAGE){
-        return ahPrices[item].avg
+        return parseInt(ahPrices[item].avg)
     }
 }
 
