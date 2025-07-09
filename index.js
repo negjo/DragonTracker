@@ -824,8 +824,9 @@ register("gameLoad", () => {
 
 register("command", (...args) => {
     print("test")
-    pogObject.Profit = pogObject.Profit + getPrice("Dragon_Horn")
-    pogObject.save()
+    //pogObject.Profit = pogObject.Profit + getPrice("Dragon_Horn")
+    //pogObject.save()
+    ChatLib.chat(parseInt(~~1145))
 }).setName("dttest", false)
 
 backup = pogObject

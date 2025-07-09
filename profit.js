@@ -105,13 +105,21 @@ function updateBzPrice(item, retryCnt){
             }
             else{
                 ChatLib.chat("&e[DT] &cFailed to update Bazaar prices for " + item + ". If this keeps happening repeatedly, please report it.")
+                print(JSON.stringify(err))
             }
         }
     );
 }
 
 function updateBzAvgPrice(item, retryCnt){
-    let avgUrl = "https://sky.coflnet.com/api/item/price/" + item.toUpperCase()
+    let itemApiName = item.toUpperCase()
+    if(itemApiName.includes("FRAGMENT")){
+        itemApiName = itemApiName.split("_")[0] + "_" + itemApiName.split("_")[2]
+    }
+    else if(itemApiName == "DRAGON_ESSENCE"){
+        itemApiName = "ESSENCE_DRAGON"
+    }
+    let avgUrl = "https://sky.coflnet.com/api/item/price/" + itemApiName
     request({
         url: avgUrl,
         headers: {
@@ -130,6 +138,7 @@ function updateBzAvgPrice(item, retryCnt){
             }
             else{
                 ChatLib.chat("&e[DT] &cFailed to update Bazaar average price for " + item + ". If this keeps happening repeatedly, please report it.")
+                print(JSON.stringify(err))
             }
         }
     );
@@ -164,6 +173,7 @@ function updateAhAvgPrice(item, retryCnt){
             }
             else{
                 ChatLib.chat("&e[DT] &cFailed to update AH average price for " + item + ". If this keeps happening repeatedly, please report it.")
+                print(JSON.stringify(err))
             }
         }
     );
@@ -198,6 +208,7 @@ function updateAhLbinPrice(item, retryCnt){
             }
             else{
                 ChatLib.chat("&e[DT] &cFailed to update AH LBIN price for " + item + ". If this keeps happening repeatedly, please report it.")
+                print(JSON.stringify(err))
             }
         }
     );

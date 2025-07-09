@@ -309,7 +309,7 @@ class Settings {
 
     @SwitchProperty({
         name: "Black Cat warning",
-        description: "Show warning if you summon a dragon without black cat pet equipped. You must have pet tab widget enabled for this to work. Doesn't really work with pet rules, because the tablist takes forever to update.",
+        description: "Show warning if you summon a dragon without black cat pet equipped. You must have pet tab widget enabled for this to work. Doesn't really work with pet rules since the tablist takes forever to update.",
         category: "Misc",
         placeholder: "Disable"
     })
@@ -363,7 +363,7 @@ class Settings {
         subcategory: "Pricing",
         options: ["Buy Order", "Middle", "Insta Buy", "Average"]
     })
-    eyePricing = 0;
+    eyePricing = 3;
 
     @SelectorProperty({
         name: "AH prices",
@@ -372,7 +372,7 @@ class Settings {
         subcategory: "Pricing",
         options: ["Lowest BIN", "Average"]
     })
-    ahPricing = 0;
+    ahPricing = 1;
 
     @SelectorProperty({
         name: "Dragon Horn pricing",
@@ -381,7 +381,7 @@ class Settings {
         subcategory: "Pricing",
         options: ["Sell Order", "Middle", "Insta Sell", "Average"]
     })
-    hornPricing = 1;
+    hornPricing = 3;
 
     @SelectorProperty({
         name: "Dragon Fragment pricing",
@@ -390,7 +390,7 @@ class Settings {
         subcategory: "Pricing",
         options: ["Sell Order", "Middle", "Insta Sell", "Average"]
     })
-    fragPricing = 1;
+    fragPricing = 3;
 
     @SelectorProperty({
         name: "Dragon Essence pricing",
@@ -399,7 +399,7 @@ class Settings {
         subcategory: "Pricing",
         options: ["Sell Order", "Middle", "Insta Sell", "Average"]
     })
-    essencePricing = 1;
+    essencePricing = 3;
 
     @SelectorProperty({
         name: "Ritual Residue pricing",
@@ -408,7 +408,7 @@ class Settings {
         subcategory: "Pricing",
         options: ["Sell Order", "Middle", "Insta Sell", "Average"]
     })
-    residuePricing = 1;
+    residuePricing = 3;
 
     @SelectorProperty({
         name: "Draconic Shard pricing",
@@ -417,7 +417,7 @@ class Settings {
         subcategory: "Pricing",
         options: ["Sell Order", "Middle", "Insta Sell", "Average"]
     })
-    draconicPricing = 1;
+    draconicPricing = 3;
 
     @SelectorProperty({
         name: "Other Items pricing",
@@ -426,7 +426,7 @@ class Settings {
         subcategory: "Pricing",
         options: ["Sell Order", "Middle", "Insta Sell", "Average"]
     })
-    otherPricing = 1;
+    otherPricing = 3;
 
     @SwitchProperty({
         name: "Sacrifice AOTDs",
@@ -464,7 +464,8 @@ class Settings {
         this.setCategoryDescription("Misc", "Other useful stuff for true dragoniers.")
         this.setCategoryDescription("Profit", "Settings for calculating estimated profit from dragons." +
                                     "\nAll the data is supplied from https://sky.coflnet.com/data and automatically updated every 15 minutes." +
-                                    "\nYou can also manually update the data using /dtupdate.")
+                                    "\nYou can also manually update the data using /dtupdate." +
+                                    "\nAverage prices are the average sell prices from the last 2 days. They can be a bit less accurate, but are immune to price manipulation.")
     }
 }
 
