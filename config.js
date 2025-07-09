@@ -2,24 +2,9 @@ import { @Vigilant, @SwitchProperty, @SliderProperty, @PercentSliderProperty, @B
 
 @Vigilant("DragonTracker", "§e§lDragon Tracker by negjo", {
     getCategoryComparator: () => (a, b) => {
-        // By default, categories, subcategories, and properties are sorted alphabetically.
-        // You can override this behavior by returning a negative number if a should be sorted before b,
-        // or a positive number if b should be sorted before a.
-
-        // In this case, we can put Not general! to be above general.
         const categories = ['General', 'Display', 'Chat', 'Tracker', "Profit", 'Misc'];
-
         return categories.indexOf(a.name) - categories.indexOf(b.name);
     },
-    /*
-    getSubcategoryComparator: () => (a, b) => {
-        // These function examples will sort the subcategories by the order in the array, so 
-        // will be above Category.
-        const subcategories = ["General", "Loot", "Extra"];
-
-        return subcategories.indexOf(a.getValue()[0].attributesExt.subcategory) -
-            subcategories.indexOf(b.getValue()[0].attributesExt.subcategory);
-    },*/
 })
 class Settings {
     //General

@@ -85,6 +85,7 @@ dragonDied = false;
 topDamage = 0;
 lastDamage = 0;
 lastDragon = "none"
+lastPosition = 0;
 totalWeight = 0;
 runecraftingExp = 0;
 dropsDetected = [];
@@ -238,6 +239,7 @@ register("chat", (prefix, damage, position) =>  {
     }
     let myDamage = cleanDamageString(damage)
     lastDamage = myDamage
+    lastPosition = position;
 
     let damageWeight = parseInt(myDamage/topDamage*100)
     let positionWeight = 10;
@@ -492,7 +494,8 @@ function scanForLoot(){
             Client.showTitle(itemFound, " ", 0, 40, 10)
         }
         let frags = parseInt(weightLeft/22)
-        let gotDraconic = (placed > 0 && lastDamage > 0);
+        //not sure if this equation is correct, might change when I found out more information
+        let gotDraconic = ((placed > 0 && lastDamage > 0) || (placed == 0 && lastDamage > 0 && lastPosition <= 5));
         let profit = 0;
         profit -= placed * getPrice("Summoning_Eye")
         if(itemFound == "§7[Lvl 1] §5Ender Dragon" ){
@@ -807,7 +810,7 @@ register("command", (...args) => {
 }).setName("dtupdate", false)
 
 register("gameLoad", () => {
-    if(pogObject.Last_Version != "1.1.0"){
+    if(pogObject.Last_Version != "1.1.00"){
         ChatLib.chat("&c[Dragon Tracker] &eThe dragon tracker has been updated to version 1.1.0!")
         ChatLib.chat("&eChange log:")
         ChatLib.chat("&e - Added support for Draconic shards")
@@ -815,29 +818,9 @@ register("gameLoad", () => {
         ChatLib.chat("&e - Fixed crashes when searching in the config")
         ChatLib.chat("&e - A bunch of other small fixes")
         ChatLib.chat("&e Check out github or ct website for complete change log")
-        ChatLib.chat("&e Check out &c/dt &eto set the prices that should be used for profit calculations and some other new settings")
-        ChatLib.chat("&e Check out &c/dthelp &eto see all commands")
+        ChatLib.chat("&e Check out &c/dt &eto set the prices that should be used for profit calculations, what items are getting sacrificed and some other new settings")
+        ChatLib.chat("&e If you encounter any issues, please report them on github or discord")
         pogObject.Last_Version = "1.1.0"
         pogObject.save()
     }
 })
-
-register("command", (...args) => {
-    print("test")
-    //pogObject.Profit = pogObject.Profit + getPrice("Dragon_Horn")
-    //pogObject.save()
-    ChatLib.chat(parseInt(~~1145))
-}).setName("dttest", false)
-
-backup = pogObject
-
-register("command", (...args) => {
-    print("test")
-    backup = pogObject
-}).setName("dtbackup", false)
-
-register("command", (...args) => {
-    print("test")
-    pogObject = backup
-    pogObject.save()
-}).setName("dtrollback", false)
