@@ -70,6 +70,7 @@ const pogObject = new PogObject("DragonTracker", {
     Weight_history: [],
     Loot_History: [],
     Dragon_History: [],
+    Profit_History: [],
 
     Profit: 0,
     Profit_Drag_Count: 0,
@@ -584,6 +585,7 @@ function scanForLoot(){
         pogObject.Weight_history.push(totalWeight)
         pogObject.Loot_History.push(itemFound)
         pogObject.Dragon_History.push(lastDragon)
+        pogObject.Profit_History.push(profit)
         pogObject.Profit = pogObject.Profit + profit;
         pogObject.Profit_Drag_Count = pogObject.Profit_Drag_Count + 1;
         pogObject.Profit_Eyes_Count = pogObject.Profit_Eyes_Count + placed;
@@ -739,8 +741,7 @@ function updateLootTracker(){
             let drag = pogObject.Dragon_History[pogObject.Dragon_History.length - i].toLowerCase()
             let eyes = pogObject.Eyes_Placed_history[pogObject.Eyes_Placed_history.length - i]
             let loot = pogObject.Loot_History[pogObject.Loot_History.length - i];
-            let lootString = loot.slice(2).replace(/ /g, "_");
-            let profit = getPrice(lootString) - eyes * getPrice("Summoning_Eye")
+            let profit = pogObject.Profit_History[pogObject.Profit_History.length - i];
             if (profit < 0) {
                 lootTrackerArray.push("&6" + drag + " &e" + eyes + " eyes &e" + loot + " &c-" + formatPrice(-profit))
             }
@@ -810,13 +811,13 @@ register("command", (...args) => {
 }).setName("dtupdate", false)
 
 register("gameLoad", () => {
-    if(pogObject.Last_Version != "1.1.00"){
+    if(pogObject.Last_Version != "1.1.0"){
         ChatLib.chat("&c[Dragon Tracker] &eThe dragon tracker has been updated to version 1.1.0!")
         ChatLib.chat("&eChange log:")
-        ChatLib.chat("&e - Added support for Draconic shards")
-        ChatLib.chat("&e - Added profit calculations")
-        ChatLib.chat("&e - Fixed crashes when searching in the config")
-        ChatLib.chat("&e - A bunch of other small fixes")
+        ChatLib.chat("&c - &eAdded support for Draconic shards")
+        ChatLib.chat("&c - &eAdded profit calculations")
+        ChatLib.chat("&c - &eFixed crashes when searching in the config")
+        ChatLib.chat("&c - &eA bunch of other small fixes")
         ChatLib.chat("&e Check out github or ct website for complete change log")
         ChatLib.chat("&e Check out &c/dt &eto set the prices that should be used for profit calculations, what items are getting sacrificed and some other new settings")
         ChatLib.chat("&e If you encounter any issues, please report them on github or discord")
