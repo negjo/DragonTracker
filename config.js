@@ -361,7 +361,7 @@ class Settings {
         description: "Choose what kind of price to use for summoning eyes.",
         category: "Profit",
         subcategory: "Pricing",
-        options: ["Buy Order", "Middle", "Insta Buy"]
+        options: ["Buy Order", "Middle", "Insta Buy", "Average"]
     })
     eyePricing = 0;
 
@@ -379,7 +379,7 @@ class Settings {
         description: "Choose what kind of price to use for dragon horns.",
         category: "Profit",
         subcategory: "Pricing",
-        options: ["Sell Order", "Middle", "Insta Sell"]
+        options: ["Sell Order", "Middle", "Insta Sell", "Average"]
     })
     hornPricing = 1;
 
@@ -388,7 +388,7 @@ class Settings {
         description: "Choose what kind of price to use for dragon fragments.",
         category: "Profit",
         subcategory: "Pricing",
-        options: ["Sell Order", "Middle", "Insta Sell"]
+        options: ["Sell Order", "Middle", "Insta Sell", "Average"]
     })
     fragPricing = 1;
 
@@ -397,7 +397,7 @@ class Settings {
         description: "Choose what kind of price to use for dragon essence.",
         category: "Profit",
         subcategory: "Pricing",
-        options: ["Sell Order", "Middle", "Insta Sell"]
+        options: ["Sell Order", "Middle", "Insta Sell", "Average"]
     })
     essencePricing = 1;
 
@@ -406,7 +406,7 @@ class Settings {
         description: "Choose what kind of price to use for ritual residue",
         category: "Profit",
         subcategory: "Pricing",
-        options: ["Sell Order", "Middle", "Insta Sell"]
+        options: ["Sell Order", "Middle", "Insta Sell", "Average"]
     })
     residuePricing = 1;
 
@@ -415,7 +415,7 @@ class Settings {
         description: "Choose what kind of price to use for draconic shards.",
         category: "Profit",
         subcategory: "Pricing",
-        options: ["Sell Order", "Middle", "Insta Sell"]
+        options: ["Sell Order", "Middle", "Insta Sell", "Average"]
     })
     draconicPricing = 1;
 
@@ -424,7 +424,7 @@ class Settings {
         description: "Choose what kind of price to use for other items.",
         category: "Profit",
         subcategory: "Pricing",
-        options: ["Sell Order", "Middle", "Insta Sell"]
+        options: ["Sell Order", "Middle", "Insta Sell", "Average"]
     })
     otherPricing = 1;
 

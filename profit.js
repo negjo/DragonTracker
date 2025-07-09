@@ -9,6 +9,7 @@ const INSTABUY = 2;
 const SELLORDER = 0;
 const INSTASELL = 2;
 const MIDPRICE = 1;
+const BZAVERAGE = 3;
 
 
 
@@ -47,20 +48,20 @@ ahPrices = {
 };
 
 bzPrices = {
-    Summoning_Eye: { instaBuy: 0, instaSell: 0, midPrice: 0 },
-    Dragon_Claw: { instaBuy: 0, instaSell: 0, midPrice: 0 },
-    Dragon_Horn: { instaBuy: 0, instaSell: 0, midPrice: 0 },
-    Dragon_Scale: { instaBuy: 0, instaSell: 0, midPrice: 0 },
-    Superior_Dragon_Fragment: { instaBuy: 0, instaSell: 0, midPrice: 0 },
-    Strong_Dragon_Fragment: { instaBuy: 0, instaSell: 0, midPrice: 0 },
-    Wise_Dragon_Fragment: { instaBuy: 0, instaSell: 0, midPrice: 0 },
-    Unstable_Dragon_Fragment: { instaBuy: 0, instaSell: 0, midPrice: 0 },
-    Old_Dragon_Fragment: { instaBuy: 0, instaSell: 0, midPrice: 0 },
-    Protector_Dragon_Fragment: { instaBuy: 0, instaSell: 0, midPrice: 0 },
-    Young_Dragon_Fragment: { instaBuy: 0, instaSell: 0, midPrice: 0 },
-    Dragon_Essence: { instaBuy: 0, instaSell: 0, midPrice: 0 },
-    Ritual_Residue: { instaBuy: 0, instaSell: 0, midPrice: 0 },
-    Shard_Draconic: { instaBuy: 0, instaSell: 0, midPrice: 0 },
+    Summoning_Eye: { instaBuy: 0, instaSell: 0, midPrice: 0, avg: 0 },
+    Dragon_Claw: { instaBuy: 0, instaSell: 0, midPrice: 0, avg: 0 },
+    Dragon_Horn: { instaBuy: 0, instaSell: 0, midPrice: 0, avg: 0 },
+    Dragon_Scale: { instaBuy: 0, instaSell: 0, midPrice: 0, avg: 0 },
+    Superior_Dragon_Fragment: { instaBuy: 0, instaSell: 0, midPrice: 0, avg: 0 },
+    Strong_Dragon_Fragment: { instaBuy: 0, instaSell: 0, midPrice: 0, avg: 0 },
+    Wise_Dragon_Fragment: { instaBuy: 0, instaSell: 0, midPrice: 0, avg: 0 },
+    Unstable_Dragon_Fragment: { instaBuy: 0, instaSell: 0, midPrice: 0, avg: 0 },
+    Old_Dragon_Fragment: { instaBuy: 0, instaSell: 0, midPrice: 0, avg: 0 },
+    Protector_Dragon_Fragment: { instaBuy: 0, instaSell: 0, midPrice: 0, avg: 0 },
+    Young_Dragon_Fragment: { instaBuy: 0, instaSell: 0, midPrice: 0, avg: 0 },
+    Dragon_Essence: { instaBuy: 0, instaSell: 0, midPrice: 0, avg: 0 },
+    Ritual_Residue: { instaBuy: 0, instaSell: 0, midPrice: 0, avg: 0 },
+    Shard_Draconic: { instaBuy: 0, instaSell: 0, midPrice: 0, avg: 0 },
 };
 
 
@@ -71,6 +72,7 @@ function updatePrices(){
     }
     for(item in bzPrices){
         updateBzPrice(item, 0)
+        updateBzAvgPrice(item, 0)
     }
 }
 
@@ -102,7 +104,32 @@ function updateBzPrice(item, retryCnt){
                 }, 10000);
             }
             else{
-                ChatLib.chat("&e[DT] &cFailed to update Bazaar price for " + item + ". If this keeps happening repeatedly, please report it.")
+                ChatLib.chat("&e[DT] &cFailed to update Bazaar prices for " + item + ". If this keeps happening repeatedly, please report it.")
+            }
+        }
+    );
+}
+
+function updateBzAvgPrice(item, retryCnt){
+    let avgUrl = "https://sky.coflnet.com/api/item/price/" + item.toUpperCase()
+    request({
+        url: avgUrl,
+        headers: {
+            "User-Agent": "Mozilla/5.0 (ChatTriggers)"
+        },
+        json: true,
+    })
+        .then(function(response) {
+            bzPrices[item].avg = response.mean;
+        })
+        .catch(function(err) {
+            if(retryCnt < 5){
+                setTimeout(() => {
+                    updateBzAvgPrice(item, retryCnt + 1)
+                }, 10000);
+            }
+            else{
+                ChatLib.chat("&e[DT] &cFailed to update Bazaar average price for " + item + ". If this keeps happening repeatedly, please report it.")
             }
         }
     );
@@ -243,6 +270,9 @@ function getBzItemPrice(item, setting){
         else if(setting == MIDPRICE){
             return parseInt(bzPrices[item].midPrice)
         }
+        else if(setting == BZAVERAGE){
+            return parseInt(bzPrices[item].avg)
+        }
     }
     if(setting == INSTASELL){
         return parseInt(bzPrices[item].instaSell)
@@ -252,6 +282,9 @@ function getBzItemPrice(item, setting){
     }
     else if(setting == MIDPRICE){
         return parseInt(bzPrices[item].midPrice)
+    }
+    else if(setting == BZAVERAGE){
+        return parseInt(bzPrices[item].avg)
     }
 }
 
