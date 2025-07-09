@@ -337,6 +337,10 @@ function getPrice(item){
         return getAhItemPrice("Aspect_of_the_Dragon", Settings.ahPricing, Settings.sacAotds);
     } else if (item.includes("Superior_Dragon")) {
         return getAhItemPrice(item, Settings.ahPricing, Settings.sacSups);
+    } else if (item.includes("Wise_Dragon_Leggings")) {
+        return getAhItemPrice(item, Settings.ahPricing, Settings.sacWiseLegs);
+    } else if (item.includes("Strong_Dragon_Leggings")) {
+        return getAhItemPrice(item, Settings.ahPricing, Settings.sacStrongLegs);
     } else if( item.includes("Dragon")) {
         return getAhItemPrice(item, Settings.ahPricing, Settings.sacOthers);
     } else{

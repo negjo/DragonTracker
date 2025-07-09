@@ -432,7 +432,7 @@ class Settings {
         name: "Sacrifice AOTDs",
         description: "Whether the profit calculator should assume sacrificing AOTDs instead of selling them.",
         category: "Profit",
-        subcategory: "Sactifice",
+        subcategory: "Sacrifice",
         placeholder: "Disable"
     })
     sacAotds = false;
@@ -441,19 +441,37 @@ class Settings {
         name: "Sacrifice Superior pieces",
         description: "Whether the profit calculator should assume sacrificing superior pieces instead of selling them.",
         category: "Profit",
-        subcategory: "Sactifice",
+        subcategory: "Sacrifice",
         placeholder: "Disable"
     })
     sacSups = false;
 
     @SwitchProperty({
+        name: "Sacrifice Wise leggings",
+        description: "Whether the profit calculator should assume sacrificing wise leggings instead of selling them.",
+        category: "Profit",
+        subcategory: "Sacrifice",
+        placeholder: "Disable"
+    })
+    sacWiseLegs = false;
+
+    @SwitchProperty({
+        name: "Sacrifice Strong leggings",
+        description: "Whether the profit calculator should assume sacrificing strong leggings instead of selling them.",
+        category: "Profit",
+        subcategory: "Sacrifice",
+        placeholder: "Disable"
+    })
+    sacStrongLegs = false;
+
+    @SwitchProperty({
         name: "Sacrifice other dragon pieces",
         description: "Whether the profit calculator should assume sacrificing other dragon pieces instead of selling them.",
         category: "Profit",
-        subcategory: "Sactifice",
-        placeholder: "Disable"
+        subcategory: "Sacrifice",
+        placeholder: "Enable"
     })
-    sacOthers = false;
+    sacOthers = true;
 
     constructor() {
         this.initialize(this);
