@@ -818,11 +818,12 @@ register("gameLoad", () => {
     if(pogObject.Last_Version != "1.1.0"){
         ChatLib.chat("&c[Dragon Tracker] &eThe dragon tracker has been updated to version 1.1.0!")
         ChatLib.chat("&eChange log:")
+        ChatLib.chat("&c - &eAdded comprehensive profit tracking and calculations")
         ChatLib.chat("&c - &eAdded support for Draconic shards")
-        ChatLib.chat("&c - &eAdded profit calculations")
         ChatLib.chat("&c - &eFixed crashes when searching in the config")
+        ChatLib.chat("&c - &eFixed damage detection while getting a new damage record")
+        ChatLib.chat("&c - &eFixed triggers triggering on player messages")
         ChatLib.chat("&c - &eA bunch of other small fixes")
-        ChatLib.chat("&e Check out github or ct website for complete change log")
         ChatLib.chat("&e Check out &c/dt &eto set the prices that should be used for profit calculations, what items are getting sacrificed and some other new settings")
         ChatLib.chat("&e If you encounter any issues, please report them on github or discord")
         pogObject.Last_Version = "1.1.0"
