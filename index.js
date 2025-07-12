@@ -498,18 +498,20 @@ function scanForLoot(){
         //not sure if this equation is correct, might change when I found out more information
         let gotDraconic = ((placed > 0 && lastDamage > 0) || (placed == 0 && lastDamage > 0 && lastPosition <= 5));
         let profit = 0;
-        profit -= placed * getPrice("Summoning_Eye")
-        if(itemFound == "§7[Lvl 1] §5Ender Dragon" ){
-            profit += getPrice("Epic_Ender_Dragon")
-        }
-        else if(itemFound == "§7[Lvl 1] §6Ender Dragon"){
-            profit += getPrice("Legendary_Ender_Dragon")
-        }
-        else{
-            profit += getPrice(itemFound.slice(2).replace(/ /g, "_"));
-        }
-        if(gotDraconic){
-            profit += getPrice("Shard_Draconic")
+        if(Settings.trackProfit){
+            profit -= placed * getPrice("Summoning_Eye")
+            if(itemFound == "§7[Lvl 1] §5Ender Dragon" ){
+                profit += getPrice("Epic_Ender_Dragon")
+            }
+            else if(itemFound == "§7[Lvl 1] §6Ender Dragon"){
+                profit += getPrice("Legendary_Ender_Dragon")
+            }
+            else{
+                profit += getPrice(itemFound.slice(2).replace(/ /g, "_"));
+            }
+            if(gotDraconic){
+                profit += getPrice("Shard_Draconic")
+            }
         }
         profit += frags * getPrice(lastDragon.charAt(0).toUpperCase() + lastDragon.slice(1).toLowerCase() + "_Dragon_Fragment")
         if(Settings.showInChat){
@@ -518,7 +520,9 @@ function scanForLoot(){
             ChatLib.chat("&eEyes placed: &d" + placed)
             ChatLib.chat("&eWeight: &d" + totalWeight)
             ChatLib.chat("&eLoot: &d" + itemFound + " &e+ &d" + frags + " " + lastDragon.toLowerCase() + " &efrags" + (gotDraconic ? " &e+ &6Draconic" : ""))
-            ChatLib.chat("&eProfit: " + (profit > 0 ? "&d+" + formatPrice(profit) : "&c-" + formatPrice(-profit)))
+            if(Settings.trackProfit){
+                ChatLib.chat("&eProfit: " + (profit > 0 ? "&d+" + formatPrice(profit) : "&c-" + formatPrice(-profit)))
+            }
             if(itemFound == "§7[Lvl 1] §5Ender Dragon" || itemFound == "§7[Lvl 1] §6Ender Dragon"){
                 ChatLib.chat("&eSince last pet: &d" + pogObject.Since_Last_Pet);
                 pogObject.Since_Last_Pet = 0;

@@ -107,6 +107,15 @@ class Settings {
     showEyes = true;
 
     @SwitchProperty({
+        name: "Show profit",
+        description: "Show estimated profit in the tracker.",
+        category: "Tracker",
+        subcategory: "General",
+        placeholder: "Enable"
+    })
+    showProfit = true;
+
+    @SwitchProperty({
         name: "Since last pet",
         description: "Show how many dragons you did since your last pet.",
         category: "Tracker",
@@ -318,12 +327,12 @@ class Settings {
 
     //Profit
     @SwitchProperty({
-        name: "Show profit",
-        description: "Show estimated profit in the tracker.",
+        name: "Track profit",
+        description: "Track profit from drags .",
         category: "Profit",
         placeholder: "Enable"
     })
-    showProfit = true;
+    trackProfit = true;
 
     @SwitchProperty({
         name: "Use EV to calculate profit",
