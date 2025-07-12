@@ -9,6 +9,7 @@ You can also manually download a zip file from the releases and unzip it into yo
 
 ## Usage
 - /dragontracker or /dt to open the config menu
+- /dtupdate to update market prices (they are updated automatically every 15 min)
 - The name of the item has to render for the tracker to detect it, so you need to come relatively close to the drop. Basically when the title and chat messages appear, then the item was tracked.
 
 ## Features
@@ -22,3 +23,8 @@ You can also manually download a zip file from the releases and unzip it into yo
 - Show the loot you got as a title
 - Announce your loot in party chat
 - Warn you when using wrong pet
+- Calculate profit from dragons
+- Calculate exptected value from all the loot you got
+- Send message (or command) after loot is detected
+- Configure what items should be counted as sacrifice
+- Configure what prices should be used for every item
