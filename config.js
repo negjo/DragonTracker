@@ -48,6 +48,18 @@ class Settings {
     })
     trackWithoutloot = false;
 
+    @ButtonProperty({
+        name: "Discord",
+        description: "Join my discord server for bug reports, feature suggestions, new releases, dragon lfgs and more!",
+        category: "General",
+        placeholder: "Join",
+    })
+    discordLink() {
+        java.awt.Desktop.getDesktop().browse(
+        new java.net.URI("https://discord.gg/DtP3FPsk")
+        );
+    }
+
     //Display
 
     @SwitchProperty({
@@ -319,7 +331,7 @@ class Settings {
 
     @TextProperty({
         name: "Message after loot",
-        description: "Message to send after dragon loot is detected. Can be used for teleporting out of end.",
+        description: "Message to send after dragon loot is detected.",
         category: "Misc",
         placeholder: ""
     })

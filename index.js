@@ -825,7 +825,12 @@ register("gameLoad", () => {
         ChatLib.chat("&c - &eFixed triggers triggering on player messages")
         ChatLib.chat("&c - &eA bunch of other small fixes")
         ChatLib.chat("&e Check out &c/dt &eto set the prices that should be used for profit calculations, what items are getting sacrificed and some other new settings")
-        ChatLib.chat("&e If you encounter any issues, please report them on github or discord")
+        let msg = new TextComponent("§cClick to join my &ediscord &cfor bug reports, feature suggestions, new releases and more!")
+            .setClick("open_url", "https://discord.gg/DtP3FPsk")
+            .setHover("show_text", "&cClick to join my Discord!");
+
+        ChatLib.chat(msg);
+
         pogObject.Last_Version = "1.1.0"
         pogObject.save()
     }
