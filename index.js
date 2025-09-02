@@ -1,6 +1,7 @@
 import PogObject from "PogData";
 import Settings from "./config.js"
 import "./profit.js"
+import "./chatCommands.js"
 import { bzPrices, ahPrices, updatePrices, getPrice} from "./profit.js";
 
 const pogObject = new PogObject("DragonTracker", {
@@ -814,7 +815,7 @@ register("command", (...args) => {
 	updatePrices()
 }).setName("dtupdate", false)
 
-register("gameLoad", () => {
+register("worldLoad", () => {
     if(pogObject.Last_Version != "1.1.0"){
         ChatLib.chat("&c[Dragon Tracker] &eThe dragon tracker has been updated to version 1.1.0!")
         ChatLib.chat("&eChange log:")
@@ -835,3 +836,10 @@ register("gameLoad", () => {
         pogObject.save()
     }
 })
+
+
+register("chat", (name, event) => {
+    ChatLib.chat("hello");
+}).setCriteria("test").setContains();
+
+export { pogObject, formatPrice }
