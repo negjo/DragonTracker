@@ -900,45 +900,53 @@ register("command", (placement, mf, pl) => {
         ChatLib.chat("&c[Dragon Tracker] &eWonder how are you gonna summong a dragon with " + placementSum + " eyes");
         return
     }
-
+    
     const baseLegPetOdds = placements.map(n => Math.min(n * 0.0001 * ((+mf + +pl)/100+1), 1))
     const realLegPetOdds = calculateRealOdds(baseLegPetOdds, placements)
 
-    const baseEpicPetOdds =  placements.map((n, i) => Math.min(n * 0.0005 * ((+mf + +pl)/100+1) * (1 - realLegPetOdds[i]), 1))
+    const baseEpicPetOdds =  placements.map((n, i) => Math.min(n * 0.0005 * ((+mf + +pl)/100+1) , 1) )
     const realEpicPetOdds = calculateRealOdds(baseEpicPetOdds, placements)
+    const adjustedEpicPetOdds = realEpicPetOdds.map((n, i) => n * (1 - realLegPetOdds[i]))
 
-    const baseAotdOdds =  placements.map((n, i) => Math.min(n * 0.03 * 0.956 * ((mf)/100+1) * (1 - realEpicPetOdds[i]) * (1 - realLegPetOdds[i]), 1))
+    const baseAotdOdds =  placements.map((n, i) => Math.min(n * 0.03 * (mf/100+1), 1) )
     const realAotdOdds = calculateRealOdds(baseAotdOdds, placements)
+    const adjustedAotdOdds = realAotdOdds.map((n, i) => n * (1 - realLegPetOdds[i] - adjustedEpicPetOdds[i]) * 0.95)
 
-    const baseHornOdds =  placements.map((n, i) => Math.min(0.3 * 0.044 * ((mf)/100+1) * (1 - realEpicPetOdds[i]) * (1 - realLegPetOdds[i]), 1))
+    const baseHornOdds =  placements.map((n, i) => Math.min(0.3 * ((mf)/100+1), 1))
     const realHornOdds = calculateRealOdds(baseHornOdds, placements)
+    const adjustedHornOdds = realHornOdds.map((n, i) => n * (1 - realEpicPetOdds[i] - realLegPetOdds[i]) * 0.05)
 
-    const baseClawOdds = placements.map((n, i) => Math.min(n * 0.03 * ((mf)/100+1) * (1 - realAotdOdds[i]) * (1 - realEpicPetOdds[i]) * (1 - realLegPetOdds[i]), 1))
+    const baseClawOdds = placements.map((n, i) => Math.min(n * 0.02 * (mf/100+1), 1) )
     const realClawOdds = calculateRealOdds(baseClawOdds, placements)
+    const adjustedClawOdds = realClawOdds.map((n, i) => n * (1 - realLegPetOdds[i] - adjustedEpicPetOdds[i] - adjustedAotdOdds[i] - adjustedHornOdds[i]))
 
-    const baseSupChestOdds = placements.map((n, i) => Math.min(0.3 * 0.044 * ((mf)/100+1) * (1 - realEpicPetOdds[i]) * (1 - realLegPetOdds[i]) * (1 - realClawOdds[i]) * (1 - realHornOdds[i]), 1))
+
+
+
+/*
+   const baseSupChestOdds = placements.map((n, i) => Math.min(0.3 * 0.044 * ((mf)/100+1), 1) * (1 - realEpicPetOdds[i]) * (1 - realLegPetOdds[i]) * (1 - realClawOdds[i]) * (1 - realHornOdds[i]))
     const realSupChestOdds = calculateRealOdds(baseSupChestOdds, placements)
 
-    const baseSupLegsOdds = placements.map((n, i) => Math.min(0.3 * 0.044 * ((mf)/100+1) * (1 - realEpicPetOdds[i]) * (1 - realLegPetOdds[i]) * (1 - realClawOdds[i]) * (1 - realHornOdds[i]) * (1 - realSupChestOdds[i]), 1))
+    const baseSupLegsOdds = placements.map((n, i) => Math.min(0.3 * 0.044 * ((mf)/100+1), 1) * (1 - realEpicPetOdds[i]) * (1 - realLegPetOdds[i]) * (1 - realClawOdds[i]) * (1 - realHornOdds[i]) * (1 - realSupChestOdds[i]))
     const realSupLegsOdds = calculateRealOdds(baseSupLegsOdds, placements)
 
-    const baseSupHelmetOdds = placements.map((n, i) => Math.min(0.3 * 0.044 * ((mf)/100+1) * (1 - realEpicPetOdds[i]) * (1 - realLegPetOdds[i]) * (1 - realClawOdds[i]) * (1 - realHornOdds[i]) * (1 - realSupChestOdds[i]) * (1 - realSupLegsOdds[i]), 1))
+    const baseSupHelmetOdds = placements.map((n, i) => Math.min(0.3 * 0.044 * ((mf)/100+1), 1) * (1 - realEpicPetOdds[i]) * (1 - realLegPetOdds[i]) * (1 - realClawOdds[i]) * (1 - realHornOdds[i]) * (1 - realSupChestOdds[i]) * (1 - realSupLegsOdds[i]))
     const realSupHelmetOdds = calculateRealOdds(baseSupHelmetOdds, placements)
 
-    const baseSupBootsOdds = placements.map((n, i) => Math.min(0.3 * 0.044 * ((mf)/100+1) * (1 - realEpicPetOdds[i]) * (1 - realLegPetOdds[i]) * (1 - realClawOdds[i]) * (1 - realHornOdds[i]) * (1 - realSupChestOdds[i]) * (1 - realSupLegsOdds[i]) * (1 - realSupHelmetOdds[i]), 1))
+    const baseSupBootsOdds = placements.map((n, i) => Math.min(0.3 * 0.044 * ((mf)/100+1), 1) * (1 - realEpicPetOdds[i]) * (1 - realLegPetOdds[i]) * (1 - realClawOdds[i]) * (1 - realHornOdds[i]) * (1 - realSupChestOdds[i]) * (1 - realSupLegsOdds[i]) * (1 - realSupHelmetOdds[i]))
     const realSupBootsOdds = calculateRealOdds(baseSupBootsOdds, placements)
 
-    const baseChestOdds = placements.map((n, i) => Math.min(0.3 * 0.956 * ((mf)/100+1) * (1 - realEpicPetOdds[i]) * (1 - realLegPetOdds[i]) * (1 - realClawOdds[i]) * (1 - realAotdOdds[i]), 1))
+    const baseChestOdds = placements.map((n, i) => Math.min(0.3 * ((mf)/100+1), 1) * (1 - realEpicPetOdds[i]) * (1 - realLegPetOdds[i]) * (1 - realClawOdds[i]) * (1 - realAotdOdds[i]))
     const realChestOdds = calculateRealOdds(baseChestOdds, placements)
 
-    const baseLegsOdds = placements.map((n, i) => Math.min(0.3 * 0.956 * ((mf)/100+1) * (1 - realEpicPetOdds[i]) * (1 - realLegPetOdds[i]) * (1 - realClawOdds[i]) * (1 - realAotdOdds[i]) * (1 - realChestOdds[i]), 1))
+    const baseLegsOdds = placements.map((n, i) => Math.min(0.3 * ((mf)/100+1), 1) * (1 - realEpicPetOdds[i]) * (1 - realLegPetOdds[i]) * (1 - realClawOdds[i]) * (1 - realAotdOdds[i]) * (1 - realChestOdds[i]))
     const realLegsOdds = calculateRealOdds(baseLegsOdds, placements)
 
-    const baseHelmOdds = placements.map((n, i) => Math.min(0.3 * 0.956 * ((mf)/100+1) * (1 - realEpicPetOdds[i]) * (1 - realLegPetOdds[i]) * (1 - realClawOdds[i]) * (1 - realAotdOdds[i]) * (1 - realChestOdds[i]) * (1 - realLegsOdds[i]), 1))
+    const baseHelmOdds = placements.map((n, i) => Math.min(0.3 * ((mf)/100+1), 1) * (1 - realEpicPetOdds[i]) * (1 - realLegPetOdds[i]) * (1 - realClawOdds[i]) * (1 - realAotdOdds[i]) * (1 - realChestOdds[i]) * (1 - realLegsOdds[i]))
     const realHelmOdds = calculateRealOdds(baseHelmOdds, placements)
 
-    const baseBootsOdds = placements.map((n, i) => Math.min(0.3 * 0.956 * ((mf)/100+1) * (1 - realEpicPetOdds[i]) * (1 - realLegPetOdds[i]) * (1 - realClawOdds[i]) * (1 - realAotdOdds[i]) * (1 - realChestOdds[i]) * (1 - realLegsOdds[i]) * (1 - realHelmOdds[i]), 1))
-    const realBootsOdds = calculateRealOdds(baseBootsOdds, placements)
+    const baseBootsOdds = placements.map((n, i) => Math.min(0.3 * ((mf)/100+1), 1) * (1 - realEpicPetOdds[i]) * (1 - realLegPetOdds[i]) * (1 - realClawOdds[i]) * (1 - realAotdOdds[i]) * (1 - realChestOdds[i]) * (1 - realLegsOdds[i]) * (1 - realHelmOdds[i]))
+    const realBootsOdds = calculateRealOdds(baseBootsOdds, placements)*/
 
     //const otherDropOdds = placements.map((n, i) => 1 - (realClawOdds[i] + realAotdOdds[i] + realEpicPetOdds[i] + realLegPetOdds[i]))
 
@@ -946,15 +954,35 @@ register("command", (placement, mf, pl) => {
     ChatLib.chat("&ePlacing: &d" + placements.join("/") + " &emf: &d" + mf + " &epl: &d" + pl);
     for (let i = 0; i < placements.length; i++){
         ChatLib.chat("&c" + placements[i] + " placer:" + "&c".repeat(i));
-        ChatLib.chat("&eLeg pet: &d" + (realLegPetOdds[i] * 100).toFixed(6) + "% &e- &c" + formatPrice(realLegPetOdds[i] * getPrice("Legendary_Ender_Dragon")) + "&e/dragon" + "&c".repeat(i));
-        ChatLib.chat("&eEpic pet: &d" + (realEpicPetOdds[i] * 100).toFixed(6) + "% &e- &c" + formatPrice(realEpicPetOdds[i] * getPrice("Epic_Ender_Dragon")) + "&e/dragon" + "&c".repeat(i));
 
-        ChatLib.chat("&eAotd: &d" + (realAotdOdds[i] * 100).toFixed(3) + "% &e- &c" + formatPrice(realAotdOdds[i] * getPrice("Aspect_of_the_Dragon")) + "&e/dragon" + "&c".repeat(i));
+        let legPetRevenue = realLegPetOdds[i] * getPrice("Legendary_Ender_Dragon");
+        let epicPetRevenue = adjustedEpicPetOdds[i] * getPrice("Epic_Ender_Dragon");
+        let aotdRevenue = adjustedAotdOdds[i] * getPrice("Aspect_of_the_Dragon");
+        let hornRevenue = adjustedHornOdds[i] * getPrice("Dragon_Horn");
+        let clawRevenue = adjustedClawOdds[i] * getPrice("Dragon_Claw");
+        let draconicRevenue = getPrice("Shard_Draconic");
+        let fragRevenue = 29*(getPrice("Superior_Dragon_Fragment") * 0.044 + ((getPrice("Strong_Dragon_Fragment") + getPrice("Wise_Dragon_Fragment") + getPrice("Unstable_Dragon_Fragment") + getPrice("Old_Dragon_Fragment") + getPrice("Protector_Dragon_Fragment") + getPrice("Young_Dragon_Fragment"))/6) * 0.956);
+        ChatLib.chat("&eLeg pet: &d" + (realLegPetOdds[i] * 100).toFixed(6) + "% &e- &c" + formatPrice(getPrice("Legendary_Ender_Dragon")) + " &d" + formatPrice(legPetRevenue) + "&e/dragon" + "&c".repeat(i));
+        ChatLib.chat("&eEpic pet: &d" + (adjustedEpicPetOdds[i] * 100).toFixed(6) + "% &e- &c" + formatPrice(getPrice("Epic_Ender_Dragon")) + " &d" + formatPrice(epicPetRevenue) + "&e/dragon" + "&c".repeat(i));
 
-        ChatLib.chat("&eHorn: &d" + (realHornOdds[i] * 100).toFixed(3) + "% &e- &c" + formatPrice(realHornOdds[i] * getPrice("Dragon_Horn")) + "&e/dragon" + "&c".repeat(i));
+        ChatLib.chat("&eAotd: &d" + (adjustedAotdOdds[i] * 100).toFixed(3) + "% &e- &c" + formatPrice(getPrice("Aspect_of_the_Dragon")) + " &d" + formatPrice(aotdRevenue) + "&e/dragon" + "&c".repeat(i));
 
-        ChatLib.chat("&eClaw: &d" + (realClawOdds[i] * 100).toFixed(3) + "% &e- &c" + formatPrice(realClawOdds[i] * getPrice("Dragon_Claw")) + "&e/dragon" + "&c".repeat(i));
-        
+        ChatLib.chat("&eHorn: &d" + (adjustedHornOdds[i] * 100).toFixed(3) + "% &e- &c" + formatPrice(getPrice("Dragon_Horn")) + " &d" + formatPrice(hornRevenue) + "&e/dragon" + "&c".repeat(i));
+
+        ChatLib.chat("&eClaw: &d" + (adjustedClawOdds[i] * 100).toFixed(3) + "% &e- &c" + formatPrice(getPrice("Dragon_Claw")) + " &d" + formatPrice(clawRevenue) + "&e/dragon" + "&c".repeat(i));
+
+        ChatLib.chat("&eDraconic: &d1 &e- &c" + formatPrice(draconicRevenue) + "&e/dragon" + "&c".repeat(i));
+        ChatLib.chat("&eFragments: &d29 &e- &c" + formatPrice(fragRevenue) + "&e/dragon" + "&c".repeat(i));
+
+        let totalRevenue = legPetRevenue + epicPetRevenue + aotdRevenue + hornRevenue + clawRevenue + draconicRevenue + fragRevenue;
+        let eyeCost = getPrice("Summoning_Eye") * 8;
+        let totalProfit = totalRevenue - eyeCost;
+
+        ChatLib.chat("&eTotal revenue: &d" + formatPrice(totalRevenue))
+        ChatLib.chat("&eEye cost: &d" + formatPrice(eyeCost))
+        ChatLib.chat("&eTotal profit: &d" + formatPrice(totalProfit))
+        ChatLib.chat("&eEye breakeven: &d" + formatPrice(totalRevenue / 8))
+
         /*
         ChatLib.chat("&eSup chest: &d" + (realSupChestOdds[i] * 100).toFixed(3) + "% &e- &c" + formatPrice(realSupChestOdds[i] * getPrice("Superior_Dragon_Chestplate")) + "&e/dragon" + "&c".repeat(i));
         ChatLib.chat("&eSup legs: &d" + (realSupLegsOdds[i] * 100).toFixed(3) + "% &e- &c" + formatPrice(realSupLegsOdds[i] * getPrice("Superior_Dragon_Leggings")) + "&e/dragon" + "&c".repeat(i));
@@ -969,16 +997,17 @@ register("command", (placement, mf, pl) => {
         ChatLib.chat("&eOther chest: &d" + (realChestOdds[i] * 100).toFixed(3) + "% &e- &c" + formatPrice(realChestOdds[i] * chestProfit) + "&e/dragon" + "&c".repeat(i));
         ChatLib.chat("&eOther legs: &d" + (realLegsOdds[i] * 100).toFixed(3) + "% &e- &c" + formatPrice(realLegsOdds[i] * legsProfit) + "&e/dragon" + "&c".repeat(i));
         ChatLib.chat("&eOther helm: &d" + (realHelmOdds[i] * 100).toFixed(3) + "% &e- &c" + formatPrice(realHelmOdds[i] * helmProfit) + "&e/dragon" + "&c".repeat(i));
-        ChatLib.chat("&eOther boots: &d" + (realBootsOdds[i] * 100).toFixed(3) + "% &e- &c" + formatPrice(realBootsOdds[i] * bootsProfit) + "&e/dragon" + "&c".repeat(i));
-*/
+        ChatLib.chat("&eOther boots: &d" + (realBootsOdds[i] * 100).toFixed(3) + "% &e- &c" + formatPrice(realBootsOdds[i] * bootsProfit) + "&e/dragon" + "&c".repeat(i));*/
+
+/*
         let totalProfit = realLegPetOdds[i] * getPrice("Legendary_Ender_Dragon") + realEpicPetOdds[i] * getPrice("Epic_Ender_Dragon") + realAotdOdds[i] * getPrice("Aspect_of_the_Dragon") + realClawOdds[i] * getPrice("Dragon_Claw") + realHornOdds[i] * getPrice("Dragon_Horn") + realSupChestOdds[i] * getPrice("Superior_Dragon_Chestplate") + realSupLegsOdds[i] * getPrice("Superior_Dragon_Leggings") + realSupHelmetOdds[i] * getPrice("Superior_Dragon_Helmet") + realSupBootsOdds[i] * getPrice("Superior_Dragon_Boots") + realChestOdds[i] * chestProfit + realLegsOdds[i] * legsProfit + realHelmOdds[i] * helmProfit + realBootsOdds[i] * bootsProfit;
-        ChatLib.chat("&eTotal: &d" + formatPrice(totalProfit) + "&e/dragon" + "&c".repeat(i));
+        ChatLib.chat("&eTotal: &d" + formatPrice(totalProfit) + "&e/dragon" + "&c".repeat(i));*/
 
 
 
 
 
-        ChatLib.chat("&eTotal value/dragon: &d" + formatPrice((realLegPetOdds[i] * getPrice("Legendary_Ender_Dragon")) + (realEpicPetOdds[i] * getPrice("Epic_Ender_Dragon")) + (realAotdOdds[i] * getPrice("Aspect_of_the_Dragon")) + (realClawOdds[i] * getPrice("Dragon_Claw")) + (otherDropOdds[i] * otherDropValue)) + "&e/dragon" + "&c".repeat(i));
+//        ChatLib.chat("&eTotal value/dragon: &d" + formatPrice((realLegPetOdds[i] * getPrice("Legendary_Ender_Dragon")) + (realEpicPetOdds[i] * getPrice("Epic_Ender_Dragon")) + (realAotdOdds[i] * getPrice("Aspect_of_the_Dragon")) + (realClawOdds[i] * getPrice("Dragon_Claw")) + (otherDropOdds[i] * otherDropValue)) + "&e/dragon" + "&c".repeat(i));
        //ChatLib.chat("&eLeg pet: &d" + (realLegPetOdds[i] * 100).toFixed(3) + "%" + " &eEpic pet: &d" + (realEpicPetOdds[i] * 100).toFixed(3) + "%" + " &eTotal: &d" + ((realLegPetOdds[i] + realEpicPetOdds[i]) * 100).toFixed(3) + "%" + "&c".repeat(i));
        //ChatLib.chat("&eAotd: &d" + (realAotdOdds[i] * 100).toFixed(3) + "%" + " &eClaw: &d" + (realClawOdds[i] * 100).toFixed(3) + "%" + "&c".repeat(i));
        //ChatLib.chat("&eOther: &d" + (otherDropOdds[i] * 100).toFixed(3) + "%" + "&c".repeat(i));
